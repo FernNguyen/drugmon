@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html ng-app ="myApp">
+    <head>
+        <title>AngularJS Basic Example</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+        <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css"/>
+        <link rel="stylesheet" href="assets/css/animate.css" type="text/css"/>
+        <link rel="stylesheet" href="assets/css/bootstrap_calendar.css" type="text/css"/>
+        <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
+
+
+        <script src="assets/jquery-2.0.3.min.js"></script> 
+        <script src="assets/bootstrap.min.js"></script> 
+
+
+        <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" charset="UTF-8"></script>
+        <script data-require="angular.js@1.4.x" src="https://code.angularjs.org/1.4.12/angular.js" data-semver="1.4.9"></script>
+        <script type='text/javascript' src="lib/angular-ui-router.min.js" charset="UTF-8"></script>
+        
+        <script type='text/javascript' src="app.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="app/app.controller.js" charset="UTF-8"></script>
+    </head>
+    <body>
+
+        <section class="vbox">
+    <header class="bg-dark dk header navbar navbar-fixed-top-xs">
+        <div class="navbar-header aside-md">
+            <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html">
+<i class="fa fa-bars"></i>
+</a>
+            <a href="#" class="navbar-brand" data-toggle="fullscreen"><img src="assets/images/logo.png" class="m-r-sm" style="min-height: 40px !important;margin-left: 6px;"></a>
+            <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user">
+<i class="fa fa-cog"></i>
+</a>
+        </div>
+
+
+        <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+<span class="thumb-sm avatar pull-left">
+<img src="assets/images/default-avatar.png">
+</span>
+Hello <strong>Admin</strong><b class="caret"></b>
+</a>
+                <ul class="dropdown-menu animated fadeInRight">
+                    <span class="arrow top"></span>
+                    <li>
+                        <a href="#">Account setting</a>
+                    </li>
+                    <li>
+                        <a href="#">Login history</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">Logout</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </header>
+    <section>
+        <section class="hbox stretch">
+
+            <aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav">
+                <section class="vbox">
+                    <section class="w-f scrollable">
+                        <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="5px" data-color="#333333">
+
+                            <nav class="nav-primary hidden-xs">
+                                <ul class="nav">
+                                    <li>
+                                        <a href="/">
+<i class="fa fa-dashboard icon">
+<b class="bg-info"></b>
+</i>
+<span>Messages</span>
+</a>
+                                    </li>
+                                    <li>
+                                        <a href="/messages" ui-sref="reports" title="" ng-class="{active: checkactive('reports')}">
+<i class="fa fa-users icon">
+<b class="bg-success"></b>
+</i>
+<span>Reports</span>
+</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="/people">
+<i class="fa fa-credit-card">
+<b class="bg-primary"></b>
+</i>
+<span>Health Facility </span>
+</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('emails');?>">
+<i class="fa fa-eye-slash">
+<b class="bg-danger"></b>
+</i>
+<span>Stocks</span>
+</a>
+                                    </li>
+                                    <li>
+                                        <a href="/config">
+<i class="fa fa-cogs">
+<b class="bg-warning"></b>
+</i>
+<span>Setting</span>
+</a>
+                                    </li>
+
+                                </ul>
+                            </nav>
+
+                        </div>
+                    </section>
+                    
+                </section>
+            </aside>
+
+
+
+			<section class="container " ui-view=""></section>
+
+			
+               
+                <aside class="bg-light lter b-l aside-md hide" id="notes">
+                    <div class="wrapper">Notification</div>
+                </aside>
+            </section>
+        </section>
+    </body>
+</html>
+ 
