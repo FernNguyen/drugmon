@@ -2,7 +2,7 @@
 
 angular.module('myApp', [
   'ui.router'
-]).config(function($stateProvider, $urlRouterProvider) {
+]).config(function($stateProvider, $urlRouterProvider,$locationProvider) {
 
     $urlRouterProvider.otherwise('/');
     
@@ -22,9 +22,8 @@ angular.module('myApp', [
         url: '/setting',
         templateUrl: 'app/setting.html',
         controller: 'SettingCtrl'
-    })
-    ;
-    
+    });
+    $locationProvider.html5Mode(true);
 }).run(function () {
 
 }); 
