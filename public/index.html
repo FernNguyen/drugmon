@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="assets/css/animate.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/bootstrap_calendar.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
+        <link rel="stylesheet" href="assets/css/messages.css" type="text/css"/>
 
 
         <script src="assets/jquery-2.0.3.min.js"></script> 
@@ -23,6 +24,7 @@
         
         <script type='text/javascript' src="app.js" charset="UTF-8"></script>
         <script type='text/javascript' src="app/app.controller.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="app/hf.controller.js" charset="UTF-8"></script>
     </head>
     <body>
 
@@ -74,45 +76,45 @@ Hello <strong>Admin</strong><b class="caret"></b>
                             <nav class="nav-primary hidden-xs">
                                 <ul class="nav">
                                     <li>
-                                        <a href="/">
-<i class="fa fa-dashboard icon">
-<b class="bg-info"></b>
-</i>
-<span>Messages</span>
-</a>
+                                        <a ui-sref="app">
+                                        <i class="fa fa-dashboard icon">
+                                        <b class="bg-info"></b>
+                                        </i>
+                                        <span>Messages</span>
+                                        </a>
                                     </li>
                                     <li>
-                                        <a href="/messages" ui-sref="reports" title="" ng-class="{active: checkactive('reports')}">
-<i class="fa fa-users icon">
-<b class="bg-success"></b>
-</i>
-<span>Reports</span>
-</a>
+                                        <a ui-sref="reports" title="" ng-class="{active: checkactive('reports')}">
+                                            <i class="fa fa-users icon">
+                                            <b class="bg-success"></b>
+                                            </i>
+                                            <span>Reports</span>
+                                            </a>
                                     </li>
 
                                     <li>
-                                        <a href="/people">
-<i class="fa fa-credit-card">
-<b class="bg-primary"></b>
-</i>
-<span>Health Facility </span>
-</a>
+                                        <a ui-sref="healthfacility"  ng-class="{active: checkactive('healthfacility')}">
+                                            <i class="fa fa-credit-card">
+                                            <b class="bg-primary"></b>
+                                            </i>
+                                            <span>Health Facility </span>
+                                            </a>
                                     </li>
                                     <li>
-                                        <a href="<?php echo base_url('emails');?>">
-<i class="fa fa-eye-slash">
-<b class="bg-danger"></b>
-</i>
-<span>Stocks</span>
-</a>
+                                        <a ui-sref="stocks" >
+                                            <i class="fa fa-eye-slash">
+                                            <b class="bg-danger"></b>
+                                            </i>
+                                            <span>Stocks</span>
+                                            </a>
                                     </li>
                                     <li>
-                                        <a href="/config">
-<i class="fa fa-cogs">
-<b class="bg-warning"></b>
-</i>
-<span>Setting</span>
-</a>
+                                        <a ui-sref="setting" ng-class="{active: checkactive('setting')}">
+                                            <i class="fa fa-cogs">
+                                            <b class="bg-warning"></b>
+                                            </i>
+                                            <span>Setting</span>
+                                            </a>
                                     </li>
 
                                 </ul>
@@ -120,15 +122,43 @@ Hello <strong>Admin</strong><b class="caret"></b>
 
                         </div>
                     </section>
-                    
+
                 </section>
+                <!--<footer class="footer lt hidden-xs b-t b-dark">-->
+                    <!--<div id="chat" class="dropup">-->
+                        <!--<section class="dropdown-menu on aside-md m-l-n">-->
+                            <!--<section class="panel bg-white">-->
+                                <!--<header class="panel-heading b-b b-light">Active chats</header>-->
+                                <!--<div class="panel-body animated fadeInRight">-->
+                                    <!--<p class="text-sm">No active chats.</p>-->
+                                    <!--<p><a href="#" class="btn btn-sm btn-default">Start a chat</a></p>-->
+                                <!--</div>-->
+                            <!--</section>-->
+                        <!--</section>-->
+                    <!--</div>-->
+                    <!--<div id="invite" class="dropup">-->
+                        <!--<section class="dropdown-menu on aside-md m-l-n">-->
+                            <!--<section class="panel bg-white">-->
+                                <!--<header class="panel-heading b-b b-light">-->
+                                    <!--John <i class="fa fa-circle text-success"></i>-->
+                                <!--</header>-->
+                                <!--<div class="panel-body animated fadeInRight">-->
+                                    <!--<p class="text-sm">No contacts in your lists.</p>-->
+                                    <!--<p><a href="#" class="btn btn-sm btn-facebook"><i class="fa fa-fw fa-facebook"></i> Invite from Facebook</a></p>-->
+                                <!--</div>-->
+                            <!--</section>-->
+                        <!--</section>-->
+                    <!--</div>-->
+                    <!--<a href="#nav" data-toggle="class:nav-xs" class="pull-right btn btn-sm btn-dark btn-icon">-->
+                        <!--<i class="fa fa-angle-left text"></i>-->
+                        <!--<i class="fa fa-angle-right text-active"></i>-->
+                    <!--</a>-->
+                <!--</footer>-->
             </aside>
 
 
 
-			<section class="container " ui-view=""></section>
-
-			
+			<section class="container" ui-view=""></section>
                
                 <aside class="bg-light lter b-l aside-md hide" id="notes">
                     <div class="wrapper">Notification</div>

@@ -14,6 +14,14 @@ angular.module('myApp', [
         url: '/reports',
         templateUrl: 'app/reports.html',
         controller: 'ReportCtrl'
+    }).state('healthfacility', {
+        url: '/health-facility',
+        templateUrl: 'app/health_facility.html',
+        controller: 'HFCtrl'
+    }).state('setting', {
+        url: '/setting',
+        templateUrl: 'app/setting.html',
+        controller: 'SettingCtrl'
     })
     ;
     

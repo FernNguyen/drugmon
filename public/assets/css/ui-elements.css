@@ -48,7 +48,7 @@ hr.arrow-down {
 	position: relative;
 }
 hr.arrow-down:after {
-	content:url(../img/arrow.png);
+	content:url('../img/arrow.png');
 	position: absolute;
 	left: 50%;
 	margin-left: -10px;

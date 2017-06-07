@@ -1,0 +1,194 @@
+<section id="content">
+    <section class="vbox">
+        <section class="scrollable padder">
+            <ul class="breadcrumb no-border no-radius b-b b-light pull-in">
+                <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                <li class="active">
+                    People and Health
+                </li>
+            </ul>
+            <div class="col-md-12">
+
+                <section>
+
+                    <div class="main_section" style="width:100%">
+                        <div class="container" style="width:100%">
+                            <div class="chat_container">
+                                <div class="col-sm-3 chat_sidebar">
+                                    <div class="row">
+                                        <div id="custom-search-input">
+                                            <div class="input-group col-md-12">
+                                                <input type="text" class="  search-query form-control" placeholder="Find HF/VDC" />
+                                                <button class="btn btn-danger" type="button">
+                                                    <span class=" glyphicon glyphicon-search"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="member_list">
+                                            <ul class="list-unstyled">
+                                                <li class="left clearfix" ng-repeat="(pindex,hf) in list_hf" ng-click="choose_hf(hf)" ng-class="{'active_li': hf_selected._id == hf._id}">
+
+                                                    <div class="chat-body clearfix" style="margin-left:3px;">
+                                                        <div class="header_sec ">
+                                                            <strong class="primary-font"><i class="fa fa-hospital-o"></i> {{hf.name}}</strong>
+                                                        </div>
+                                                        <div class="contact_sec">
+                                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                                            Contact person: {{hf.person}}
+                                                            <!--<span class="badge">{{hf.health_facilities.length}}</span>-->
+
+                                                        </div>
+                                                    </div>
+                                                </li>
+
+                                            </ul>
+                                        </div></div>
+                                </div>
+                                <!--chat_sidebar-->
+
+
+                                <div class="col-sm-9 message_section">
+                                    <div class="row">
+                                        <div class="new_message_head">
+                                            <div class="pull-left">
+                                                <a class="btn btn-primary text-success btn_getmail" style="margin-top:-8px;" data-toggle="modal" data-show="true" data-target="#HFcreate">
+                                                    <i class="fa fa-plus"></i>  New Facility <i class="fa fa-hospital-o"></i></a>
+                                            </div>
+
+                                            <div class="pull-right"><div class="dropdown">
+                                                <button class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-cogs" aria-hidden="true"></i>  Setting
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                                                    <li><a href="#"  ng-click="get_messages()">Check message</a></li>
+                                                    <li><a href="#">Delete</a></li>
+                                                    <li><a href="#">Logout</a></li>
+                                                </ul>
+                                            </div></div>
+                                        </div><!--new_message_head-->
+
+                                        <div class="" ng-if="hf_selected">
+
+                                            <section class="panel panel-default">
+
+                                                <header class="panel-heading">
+                                                    <span class="h4">
+                                                        <i class="fa fa-hospital-o"></i> {{hf_selected.name}}
+                                                    </span>
+                                                </header><br>
+                                                <form role="form" method="post">
+                                                    <div class="row">
+                                                    <div class="col-sm-1"></div>
+                                                    <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        Phone number:
+                                                        {{hf_selected.phone}}
+                                                    </div>
+                                                    <div class="form-group">
+                                                        HF Type:
+                                                        {{hf_selected.type}}
+                                                    </div>
+                                                    <div class="form-group">
+                                                        VDC/Municipality:
+                                                        {{hf_selected.vdc}}
+                                                    </div>
+                                                        <div class="form-group">
+                                                        Address:
+                                                        {{hf_selected.address}}
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        Reporting center:
+                                                        {{hf_selected.reporting_center}}
+                                                    </div>
+                                                        <div class="form-group">
+                                                            Notes:
+                                                            {{hf_selected.notes}}
+                                                        </div>
+                                                    <hr>
+                                                            <div class="form-group">
+                                                                <strong><i class="fa fa-user-md"></i> Person Contact:</strong>
+                                                                {{hf_selected.person}} (Mobile: {{hf_selected.person_mobile}})
+                                                            </div>
+                                                    <div class="panel-footer text-right bg-light lter">
+                                                        <button type="submit" onclick="submitForm();" name="change" class="btn btn-success btn-s-xs">Save Changes</button>
+                                                        <button type="button" name="back" class="btn btn-info btn-s-xs"><i class="fa fa-edit"></i> Edit</button>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                    <div class="col-sm-1"></div>
+                                                </form>
+                                            </section>
+                                        </div><!--chat_area-->
+
+                                    </div>
+                                </div> <!--message_section-->
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+        </section>
+    </section>
+</section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="HFcreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">New Health facility</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            Name of HF: <input class="form-control" name="name" type="text" ng-model="hf.name">
+                        </div>
+                        <div class="form-group">
+                            Phone number: <input class="form-control" name="phone" ng-model="hf.phone" type="text" >
+                        </div>
+                        <div class="form-group">
+                            VDC/Municipality name: <input class="form-control" name="phone" ng-model="hf.vdc" type="text" >
+                        </div>
+                        <div class="form-group">
+                            Address: <input class="form-control" name="address" ng-model="hf.address" type="text" >
+                        </div>
+                        <div class="form-group">
+                            Reporting Center: <input class="form-control" name="phone" ng-model="hf.reporting_center" type="text" >
+                        </div>
+                        <div class="form-group">
+                            Type of Heath Facility: <input class="form-control" name="type" ng-model="hf.type" type="text" >
+                        </div>
+                        <div class="form-group">
+                            Heath Facility notes:
+                            <textarea class="form-control" name="type" ng-model="hf.notes" type="text" ></textarea>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            Contact Person: <input class="form-control" name="msg.content" ng-model="hf.person" type="text" >
+                        </div>
+                        <div class="form-group">
+                            Contact Person's Mobile: <input class="form-control" name="msg.content" ng-model="hf.person_mobile" type="text" >
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" ng-click="createNewHF(hf);" name="change" class="btn btn-success btn-s-xs">Create</button>
+                <button type="button" data-dismiss="modal" class="btn btn-info btn-s-xs"><i class="fa fa-chevron-left"></i> Back</button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

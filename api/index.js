@@ -17,39 +17,80 @@ app.use('/api/app', function(req, res) {
             return res.json({ 'medic-gateway': true });
           case 'POST':
             // enforce expected headers
-            if(datastore.errors.length) {
-              throw new Error(datastore.errors.shift());
-            }
 
-        
         var _dataDB = req.body.messages;
         var _responseMSG = [];
         _dataDB.forEach(function(eachDB){
             //update View
-            eachDB.doc_type = 'messages';
-            db.collection('messages').insert(eachDB).then(function(rs){
-                console.log('inserted');
-                if(SMSCheck.validSmsSyntax(eachDB.content) == true){
-                    console.log('CHECK SYNTAXXXXX');
-                    var _smsSyntax = eachDB.content.split(' ');
-                    _responseMSG.push({
-                        "id": makeRandID(),
-                        "to": eachDB.from,
-                        "content": "Thank you for registering! Drug code: "+_smsSyntax[1]+", qtt: "+_smsSyntax[2]
-                    })
-                }else{
-                    _responseMSG.push({
-                        "id": makeRandID(),
-                        "to": eachDB.from,
-                        "content": "The registration format is incorrect, ensure the message starts with R followed by space and DrugCode, space and DrugQuantity (Ex: R 1 33)"
-                    })
+            if(SMSCheck.validSmsSyntax(eachDB.content) == true){
+                var _smsSyntax = eachDB.content.split(' '),
+                    _transCode = makeRandID();
+                _responseMSG.push({
+                    "id": _transCode,
+                    "to": eachDB.from,
+                    "content": "Request accepted! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2]+". Trans code: "+_transCode
+                });
+
+                var _xdata = {
+                    "from" : eachDB.from,
+                    "form" : "R",
+                    "reported_date" : 1496392521022.0,
+                    "sms_message" : {
+                        "form" : "R",
+                        "type" : "sms_message",
+                        "gateway_ref" : "e6f0bb62-de84-4d67-b282-1dd670a487ac",
+                        "from" : eachDB.from,
+                        "message" : eachDB.content
+                    },
+                    "tasks" : [
+                        {
+                            "state" : "sent",
+                            "timestamp" : "2017-06-02T08:35:24.283Z",
+                            "state_history" : [
+                                {
+                                    "timestamp" : "2017-06-02T08:35:22.434Z",
+                                    "state" : "pending"
+                                },
+                                {
+                                    "timestamp" : "2017-06-02T08:35:24.283Z",
+                                    "state" : "sent"
+                                }
+                            ],
+                            "messages" : [
+                                {
+                                    "to" : eachDB.from,
+                                    "uuid" : "81a29f6c-089e-4441-bf93-c829648bf410",
+                                    "message" : "Request accepted! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2]+". Trans code: "+_transCode
+                                }
+                            ]
+                        }
+                    ]
                 }
-            }).catch((err)=>{
-                console.log(err);
-            });
+
+                db.collection('drugregisters').insert(_xdata).then(function(rs){
+                    console.log('Inserted to Drugregister collection!');
+                });
+
+
+
+            }else{
+
+                _responseMSG.push({
+                    "id": makeRandID(),
+                    "to": eachDB.from,
+                    "content": "The registration format is incorrect, ensure the message starts with R followed by space and DrugCode, space and DrugQuantity (Ex: R 1 33)"
+                });
+
+                db.collection('messages').insert(eachDB).then(function(rs){
+                    console.log('Inserted to messages collection!');
+                });
+
+            }
+
         })
+
+
         setTimeout(()=>{
-            console.log('LIST',_responseMSG);
             res.json({messages: _responseMSG});
           },100);
 

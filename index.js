@@ -19,7 +19,6 @@ var db = mongoose.connection;
 const app = express();
 
 app.use(bodyParser.json());
-//app.use(instantMongoCrud(crud_options)); // use as middleware
 
 require('./api')(app,db,SMSCheck); //Import API SMS_GATEWAY
 
@@ -57,6 +56,7 @@ app.get('/messages', function(req,res){
 //     // });
 // })
 
+app.use(instantMongoCrud(crud_options)); // use as middleware
 
 app.listen('81', () =>{
     console.log('Server started at port: 81');
