@@ -47,13 +47,13 @@ hr.arrow-down {
 	margin-bottom: 40px;
 	position: relative;
 }
-hr.arrow-down:after {
-	content:url('../img/arrow.png');
-	position: absolute;
-	left: 50%;
-	margin-left: -10px;
-	top: -5px;
-}
+/*hr.arrow-down:after {*/
+	/*content:url(../img/arrow.png);*/
+	/*position: absolute;*/
+	/*left: 50%;*/
+	/*margin-left: -10px;*/
+	/*top: -5px;*/
+/*}*/
 
 
 /* ===== Buttons ===== */
@@ -360,7 +360,6 @@ h3.headline span {
 .nav-tabs.nav-justified > .active > a:hover,
 .nav-tabs.nav-justified > .active > a:focus {
 	border: 1px solid transparent;
-	border
 }
 
 /* 2. Nav pills */
