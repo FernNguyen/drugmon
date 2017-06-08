@@ -6,25 +6,37 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 
         <base href="/" />
-        <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css"/>
-        <link rel="stylesheet" href="assets/css/animate.css" type="text/css"/>
-        <link rel="stylesheet" href="assets/css/bootstrap_calendar.css" type="text/css"/>
-        <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
-        <link rel="stylesheet" href="assets/css/messages.css" type="text/css"/>
+        <link rel="stylesheet" href="/assets/css/bootstrap.css" type="text/css"/>
+        <link rel="stylesheet" href="/assets/css/animate.css" type="text/css"/>
+        <link rel="stylesheet" href="/assets/css/bootstrap_calendar.css" type="text/css"/>
+        <link rel="stylesheet" href="/assets/css/app.css" type="text/css"/>
+        <link rel="stylesheet" href="/assets/css/messages.css" type="text/css"/>
 
 
-        <script src="assets/jquery-2.0.3.min.js"></script> 
-        <script src="assets/bootstrap.min.js"></script> 
+        <script src="/assets/jquery-2.0.3.min.js"></script>
+        <script src="/assets/bootstrap.min.js"></script>
 
 
-        <script type='text/javascript' src="lib/moment.min.js" charset="UTF-8"></script>
-        <script type='text/javascript' src="lib/lodash.min.js" charset="UTF-8"></script>
-        <script data-require="angular.js@1.4.x" src="lib/angular-1.4.9.js" data-semver="1.4.9"></script>
-        <script type='text/javascript' src="lib/angular-ui-router.min.js" charset="UTF-8"></script>
-        
-        <script type='text/javascript' src="app.js" charset="UTF-8"></script>
-        <script type='text/javascript' src="app/app.controller.js" charset="UTF-8"></script>
-        <script type='text/javascript' src="app/hf.controller.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/lib/moment.min.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/lib/lodash.min.js" charset="UTF-8"></script>
+        <script data-require="angular.js@1.4.x" src="/lib/angular-1.4.9.js" data-semver="1.4.9"></script>
+        <script type='text/javascript' src="/lib/angular-ui-router.min.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/lib/angular-sanitize.js" charset="UTF-8"></script>
+
+        <!-- ui-select files -->
+        <script src="/lib/select.min.js"></script>
+        <link rel="stylesheet" href="/assets/css/select.css">
+        <link rel="stylesheet" href="/assets/css/selectize.default.css">
+
+
+
+        <script type='text/javascript' src="/app.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/app/app.controller.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/app/hf.controller.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/app/drugs.controller.js" charset="UTF-8"></script>
+
+
+
     </head>
     <body>
 
@@ -69,7 +81,7 @@ Hello <strong>Admin</strong><b class="caret"></b>
         <section class="hbox stretch">
 
             <aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav">
-                <section class="vbox" style="height:700px;">
+                <section class="vbox" style="min-height: 900px;">
                     <section class="w-f scrollable">
                         <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="5px" data-color="#333333">
 
@@ -101,11 +113,11 @@ Hello <strong>Admin</strong><b class="caret"></b>
                                             </a>
                                     </li>
                                     <li>
-                                        <a ui-sref="stocks" >
+                                        <a ui-sref="drugs"  ng-class="{active: checkactive('drugs')}">
                                             <i class="fa fa-eye-slash">
                                             <b class="bg-danger"></b>
                                             </i>
-                                            <span>Stocks</span>
+                                            <span>Drugs category</span>
                                             </a>
                                     </li>
                                     <li>

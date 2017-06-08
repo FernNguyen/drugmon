@@ -24,10 +24,14 @@ require('./api')(app,db,SMSCheck); //Import API SMS_GATEWAY
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(req, res){
-    console.log('GETTTT');
-  res.redirect('/index.html');
+app.get('/*.html', function(req, res){
+    res.sendFile(__dirname + '/public/index.html');
 });
+//
+// app.get('/', function(req, res){
+//     console.log('GETTTT');
+//   res.redirect('/index.html');
+// });
 
 app.post('/send_message', function(req,res){
     console.log(req.body);

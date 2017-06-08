@@ -7,7 +7,7 @@
                     People and Health
                 </li>
             </ul>
-            <div class="col-md-12" style="padding-left:5px;">
+            <div class="col-md-12" style="padding-left:5px;min-height: 900px">
 
                 <section>
 
@@ -112,14 +112,82 @@
                                                                 <strong><i class="fa fa-user-md"></i> Person Contact:</strong>
                                                                 {{hf_selected.person}} (Mobile: {{hf_selected.person_mobile}})
                                                             </div>
-                                                    <div class="panel-footer text-right bg-light lter">
-                                                        <button type="submit" onclick="submitForm();" name="change" class="btn btn-success btn-s-xs">Save Changes</button>
-                                                        <button type="button" name="back" class="btn btn-info btn-s-xs"><i class="fa fa-edit"></i> Edit</button>
-                                                    </div>
+                                                    <!--<div class="panel-footer text-right bg-light lter">-->
+                                                        <!--<button type="submit" onclick="submitForm();" name="change" class="btn btn-success btn-s-xs">Save Changes</button>-->
+                                                        <!--<button type="button" name="back" class="btn btn-info btn-s-xs"><i class="fa fa-edit"></i> Edit</button>-->
+                                                    <!--</div>-->
                                                 </div>
                                                 </div>
                                                     <div class="col-sm-1"></div>
                                                 </form>
+                                            </section>
+                                            <section class="panel panel-default">
+
+                                                <header class="panel-heading">
+                                                    <span class="h4">
+                                                        <i class="fa fa-hospital-o"></i> Drug stocks
+                                                    </span>
+                                                </header><br>
+                                                <form role="form" method="post">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped b-t b-light" style="width:100%;">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>#</th>
+                                                                        <th>Drug Code</th>
+                                                                        <th>Drug Name</th>
+                                                                        <th class="text-center">ASL</th>
+                                                                        <th class="text-center">EOP</th>
+                                                                        <th class="text-center">ABS</th>
+                                                                        <th class="text-center">Action</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr>
+                                                                        <td style="width:30%" colspan="3">
+                                                                            <ui-select ng-model="newdrug.drug_push.selected" theme="selectize" title="Choose drug to add">
+                                                                                <ui-select-match placeholder="Select or search a drug...">{{$select.selected.drug_name}} (Code: {{$select.selected.drug_code}})</ui-select-match>
+                                                                                <ui-select-choices repeat="drug in list_drug | filter: $select.search">
+                                                                                    <span>
+                                                                                        {{drug.drug_name}} (Code: {{drug.drug_code}})
+                                                                                    </span>
+                                                                                </ui-select-choices>
+                                                                            </ui-select>
+
+                                                                        </td>
+                                                                        <td class="h5 text-primary" style="width:8%">
+                                                                            <input type="text" class="form-control input-sm" ng-model="newdrug.drug_asl">
+
+                                                                        </td>
+                                                                        <td class="h5 text-primary" style="width:8%">
+                                                                            <input type="text" class="form-control input-sm" ng-model="newdrug.drug_eop">
+
+                                                                        </td>
+                                                                        <td class="h5 text-primary" style="width:8%">
+                                                                            <input type="text" class="form-control input-sm" ng-model="newdrug.drug_abs">
+                                                                        </td>
+                                                                        <td class="h5 text-danger" style="width:8%">
+                                                                            <button class="btn btn-primary input-sm" ng-click="add_hfdrug(newdrug)"><i class="fa fa-arrow-down"></i> Add</button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr ng-repeat="(drung_order,drug) in hf_drugs">
+                                                                        <td>{{drung_order+1}}</td>
+                                                                        <td>{{drug.drug_code}}</td>
+                                                                        <td>{{drug.drug_name}}</td>
+                                                                        <td class="text-center"><span class="badge">{{drug.drug_asl}}</span></td>
+                                                                        <td class="text-center"><span class="badge">{{drug.drug_eop}}</span></td>
+                                                                        <td class="h5 text-primary text-center"><span class="badge">{{drug.drug_abs}}</span></td>
+                                                                        <td class="h5 text-danger">
+                                                                            <a href="#" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i> Edit</a>
+                                                                            <a href="#" class="btn btn-xs btn-danger"><i class="fa fa-times"></i> Del</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                        </div>
+                                                    </div>
                                             </section>
                                         </div><!--chat_area-->
 

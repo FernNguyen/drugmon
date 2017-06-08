@@ -22,7 +22,7 @@
     padding: 2px 5px;
     position: absolute;
     right: 0;
-    z-index: 9999;
+    z-index: 9;
 }
 .search-query:focus + button {
     z-index: 3;
@@ -84,6 +84,8 @@
 }
 .member_list li {
     padding: 6px;
+    border-left: 3px solid #F7F7F7;
+
 }
 .member_list ul {
     border: 1px solid #dddddd;
@@ -196,13 +198,15 @@
     width:100%;
 }
 .member_list li:hover {
-    background: #428bca none repeat scroll 0 0;
-    color: #fff;
+    /*background: #428bca none repeat scroll 0 0;*/
+    border-left: 3px solid #428bca;
+    /*color: #fff;*/
     cursor:pointer;
 }
 .active_li {
     background: #428bca none repeat scroll 0 0;
     color:#fff;
+    border-left: 3px solid #428bca !important;
 }
 .body_mess_p ::before {
     top: 18px;
