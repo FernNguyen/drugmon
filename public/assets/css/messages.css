@@ -221,3 +221,13 @@
     border-width: 15px;
     margin-top: -2px;
 }
+
+.sms_send_body{
+    background: #e5eef3;
+    border-radius: 5px;
+    padding: 10px;
+}
+.sms_send_body > span{
+    color: #949090;
+}
+
