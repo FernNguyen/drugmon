@@ -102,7 +102,7 @@
     border-bottom:none;
 }
 .member_list {
-    height: 380px;
+    height: 510px;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -231,3 +231,20 @@
     color: #949090;
 }
 
+.status_success{
+    color:#4cae4c
+}
+.status_reject{
+    color:#f7a408
+}
+.status_FAILED{
+    color: #f73030
+}
+.status_PENDING{
+    color: #f7a408
+}
+.status_DELIVERED {
+    color:#4cae4c
+}.status_SENT {
+    color:#335dfd
+}

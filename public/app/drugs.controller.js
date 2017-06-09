@@ -56,17 +56,17 @@ $scope.createNewHF = function(hf){
 $scope.createNewDrug = function(drug){
     var tmp_drug = {
         "drug_name": drug.drug_name,
-        "drug_code": drug.drug_code,
+        "drug_code": drug.drug_code.toUpperCase(),
         "drug_category_id": (drug.drug_category.selected && drug.drug_category.selected._id ? drug.drug_category.selected._id : ''),
         "drug_category_name": (drug.drug_category.selected && drug.drug_category.selected.cat_name ? drug.drug_category.selected.cat_name : ''),
         "drug_description": drug.drug_description,
-        "drug_status": (drug.drug_status == 1 ? true : false)
+        "drug_status": drug.drug_status
     }
     var _xdata = {
         "data": tmp_drug
     }
     $http.post('/drugs', _xdata).then(function(rs){
-        console.log(rs.data);
+        $scope.get_drugdetail();
     })
 }
 

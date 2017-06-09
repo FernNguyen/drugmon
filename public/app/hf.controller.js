@@ -53,6 +53,7 @@ $scope.createNewHF = function(hf){
         "data": hf
     };
     $http.post('/healthfacility', _xdata).then(function(rs){
+        alert('Success!');
         $scope.get_hfdetail();
     })
 }
@@ -68,7 +69,8 @@ $scope.add_hfdrug = function(drug){
             drug_id: drug.drug_push.selected._id,
             drug_asl: parseInt(drug.drug_asl),
             drug_eop: parseInt(drug.drug_eop),
-            drug_abs: parseInt(drug.drug_abs)
+            drug_abs: parseInt(drug.drug_abs),
+            hf_detail: $scope.hf_selected
         }
     }
     $http.post('/hfdrugs', tmp_hfdrug).then(function(rs){

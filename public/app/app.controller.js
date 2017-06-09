@@ -13,7 +13,7 @@ $scope.get_messages = function(){
               messages:_tmp_obj[o]
           });
       }
-      console.log($scope.list_mesages);
+      // console.log($scope.list_mesages);
   }, function(){
       console.log('Error!');
   })
@@ -29,13 +29,17 @@ $scope.get_messages = function(){
 $scope.get_messages();
 
 $scope.sendMsg = function(msg){
-
     var _xdata = {
-        "id": "3E105262-070C-4913-949B-E7ACA4F42B71",
+        "data": {
+        "id": generateUUID(),
         "to": msg.to,
-        "content": msg.content
+        "content": msg.content,
+        "state": "PENDING",
+        "type": "sms_custom",
+        "history": []
         }
-    $http.post('/send_message', _xdata).then(function(rs){
+    }
+    $http.post('/messages_out', _xdata).then(function(rs){
         if(rs.data.status === true) alert('Sent!')
     })
 
@@ -47,5 +51,16 @@ $scope.sendMsg = function(msg){
             return rv;
         }, {});
     };
+    function generateUUID () { // Public Domain/MIT
+        var d = new Date().getTime();
+        if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+            d += performance.now(); //use high-precision timer if available
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
 
 });

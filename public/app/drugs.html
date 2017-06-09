@@ -42,7 +42,7 @@
                                 <td>{{drug.drug_description}}</td>
                                 <td>{{drug.createdAt}}/{{drug.updatedAt}}</td>
                                 <td class="text-center">
-                                    <i class="fa fa-check-circle" aria-hidden="true" ng-if="drug.drug_status == true" style="color:#65bd77"></i>
+                                    <i class="fa fa-check-circle" aria-hidden="true" ng-if="drug.drug_status == 1" style="color:#65bd77"></i>
                                 </td>
                                 <td class="h5 text-danger">
                                     <a href="#" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i> Edit</a>
@@ -74,10 +74,10 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-sm-8">
-                                    Drug Name: <input class="form-control" name="name" type="text" ng-model="drug.drug_name">
+                                    Drug Name: <input class="form-control" name="name" type="text" ng-model="drug.drug_name" ng-required="">
                                 </div>
                                 <div class="col-sm-4">
-                                    Drug CODE: <input class="form-control" name="name" type="text" ng-model="drug.drug_code">
+                                    Drug CODE: <input class="form-control" name="name" type="text" ng-model="drug.drug_code" ng-required="">
                                 </div>
                             </div>
                         </div>

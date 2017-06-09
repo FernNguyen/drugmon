@@ -2,10 +2,11 @@ const express = require('express');
 const bodyParser= require('body-parser');
 const request = require('request');
 const mongoose = require('mongoose');
+const uuidV1 = require('uuid/v1');
 
 const instantMongoCrud = require('express-mongo-crud'); // require the module
 var crud_options = { //specify options
-    host: 'localhost:81'
+    host: 'localhost:80'
 }
 const SMSCheck = require('./utils.js');
 
@@ -20,7 +21,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-require('./api')(app,db,SMSCheck); //Import API SMS_GATEWAY
+require('./api')(app,db,SMSCheck,uuidV1); //Import API SMS_GATEWAY
 
 app.use(express.static(__dirname + '/public'));
 
@@ -62,6 +63,6 @@ app.get('/messages', function(req,res){
 
 app.use(instantMongoCrud(crud_options)); // use as middleware
 
-app.listen('81', () =>{
-    console.log('Server started at port: 81');
+app.listen('80', () =>{
+    console.log('Server started at port: 80');
 });

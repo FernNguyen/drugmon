@@ -4,12 +4,13 @@
 module.exports = function(mongoose){
 return [
 {
-    "id" : {type: String},
-    "register_id" : {type: String},
-    "to" : {type: String},
+    "register_id": {type: String},
     "content" : {type: String},
+    "to" : {type: String},
+    "id" : {type: String},
     "state" : {type: String},
-    "message_history" : {type: Array},
+    "type" : {type: String},
+    "history": {type: Array}
 } , {
             timestamps: true,
             createdby: true,

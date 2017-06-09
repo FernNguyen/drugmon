@@ -1,4 +1,4 @@
-module.exports = function(app,db,SMSCheck){
+module.exports = function(app,db,SMSCheck,uuidV1){
 app.use('/api/app', function(req, res) {
         if(!handleAuth(req, res, datastore.auth)) return;
 
@@ -15,26 +15,29 @@ app.use('/api/app', function(req, res) {
         switch(req.method) {
           case 'GET':
             return res.json({ 'medic-gateway': true });
-          case 'POST':
+            case 'POST':
             // enforce expected headers
-
         var _dataDB = req.body.messages;
         var _responseMSG = [];
+
+        console.log('_SMS_GATEWAY_POST_');
         _dataDB.forEach(function(eachDB){
             //update View
+            eachDB.type = "sms_in";
+
             if(SMSCheck.validSmsSyntax(eachDB.content) == true){
                 var _smsSyntax = eachDB.content.split(' '),
-                    _transCode = makeRandID();
-                _responseMSG.push({
-                    "id": _transCode,
-                    "to": eachDB.from,
-                    "content": "Request accepted! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2]+". Trans code: "+_transCode
-                });
+                    _transCode = uuidV1(),
+                    _msgTasks = {},
+                    _task_register = [],
+                    drugRegID = '';
+
 
                 var _xdata = {
                     "from" : eachDB.from,
                     "form" : "R",
-                    "reported_date" : 1496392521022.0,
+                    "state": "PENDING",
+                    "reported_date" : new Date().toString(),
                     "sms_message" : {
                         "form" : "R",
                         "type" : "sms_message",
@@ -42,62 +45,128 @@ app.use('/api/app', function(req, res) {
                         "from" : eachDB.from,
                         "message" : eachDB.content
                     },
-                    "tasks" : [
-                        {
-                            "state" : "sent",
-                            "timestamp" : "2017-06-02T08:35:24.283Z",
-                            "state_history" : [
-                                {
-                                    "timestamp" : "2017-06-02T08:35:22.434Z",
-                                    "state" : "pending"
-                                },
-                                {
-                                    "timestamp" : "2017-06-02T08:35:24.283Z",
-                                    "state" : "sent"
-                                }
-                            ],
-                            "messages" : [
-                                {
-                                    "to" : eachDB.from,
-                                    "uuid" : "81a29f6c-089e-4441-bf93-c829648bf410",
-                                    "message" : "Request accepted! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2]+". Trans code: "+_transCode
-                                }
-                            ]
-                        }
-                    ]
+                    updatedAt: new Date(),
+                    createdAt: new Date()
                 }
 
-                db.collection('drugregisters').insert(_xdata).then(function(rs){
-                    console.log('Inserted to Drugregister collection!');
+                db.collection('drugregisters').insert(_xdata).then(function(data_reg){
+                            drugRegID = data_reg.insertedIds[0].toString();
+
+
+                db.collection('hfdrugs').find({"drug_code": _smsSyntax[1].toUpperCase(),"hf_detail.person_mobile": eachDB.from}).toArray(function(error, data){
+                    if(error == null){
+                        if(data.length > 0){
+                            _task_register.push(create_task("Register Succeed! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2],eachDB.from,'sms_default','PENDING',drugRegID));
+                            //Found it
+                            var _request_qty = parseInt(_smsSyntax[2]),
+                                _druginfo = data[0];
+
+                            //Step 0: Select HF drug
+                            db.collection('hfdrugs').update(
+                                {"_id": _druginfo._id},
+                                {$set: { "drug_abs": _request_qty }},
+                                {upsert: false}, function(update_err,update_data){
+                    if(update_err){
+                        //Can't update
+                    }else{
+                       //After update ABS
+                    if(_request_qty <= parseInt(_druginfo.drug_eop)){
+                        //General task
+                        var _top_stock_mobile = _druginfo.hf_detail.person_mobile;
+                        var _hf_stock_mobile = _druginfo.hf_detail.person_mobile;
+                        _task_register.push(create_task(_druginfo.hf_detail.name+' has low stock of '+_druginfo.drug_code,_top_stock_mobile,'sms_out','PENDING',drugRegID));
+                        _task_register.push(create_task('Your balance stock is less than EOP ('+_druginfo.drug_eop+') level',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
+                    }else if(parseInt(_druginfo.drug_asl) > _request_qty && _request_qty > parseInt(_druginfo.drug_eop)){
+                        _task_register.push(create_task('Please request drug in quarterly request',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
+                    }else if(_request_qty > parseInt(_druginfo.drug_asl)){
+                        _task_register.push(create_task('You have sufficient stock',_hf_stock_mobile,'PENDING',drugRegID));
+                    }
+                    }
+                                }
+                            )
+
+                            _msgTasks ={
+                                "id": _transCode,
+                                "to": eachDB.from,
+                                "type": "success",
+                                "content": "Register Succeed! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2]
+                            };
+
+                        }else{
+                            //Not foundddddddd
+                            _msgTasks ={
+                                "id": _transCode,
+                                "to": eachDB.from,
+                                "type": "reject",
+                                "content": "Drug not found! Please check your DRUG CODE: "+_smsSyntax[1]
+                            };
+
+                            _task_register.push(create_task("Drug not found! Please check your DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2],eachDB.from,'sms_default','PENDING',drugRegID));
+
+                        }
+
+
+
+                        _responseMSG.push(_msgTasks);
+
+                        // setTimeout(function(){
+                        //     db.collection('drugregisters').insert(_xdata).then(function(rs){
+                        //         console.log('Inserted to Drugregister collection!');
+                        //     });
+                        //
+                        // },100)
+                    }
+
                 });
 
 
-
+            });
             }else{
 
-                _responseMSG.push({
-                    "id": makeRandID(),
+                var response_msg = {
+                    "id": uuidV1(),
                     "to": eachDB.from,
-                    "content": "The registration format is incorrect, ensure the message starts with R followed by space and DrugCode, space and DrugQuantity (Ex: R 1 33)"
-                });
+                    "type": "sms_out",
+                    "content": "The registration format is incorrect, ensure the message starts with R followed by space and DrugCode, space and DrugQuantity (Ex: R OXI 33)"
+                };
+
+                _responseMSG.push(response_msg); //Push to schedule task
 
                 db.collection('messages').insert(eachDB).then(function(rs){
                     console.log('Inserted to messages collection!');
                 });
-
             }
-
         })
 
+              //Check status
+                var _statusGateway = req.body.updates;
+                //Check and update status
+                if(_statusGateway){
+                    _statusGateway.forEach(function(each_rs){
+                        console.log('loop status',each_rs);
+                        updateSMSStatus(each_rs)
+                    })
+                }
 
-        setTimeout(()=>{
-            res.json({messages: _responseMSG});
-          },100);
-
-        function makeRandID(){
-            return Math.floor(Math.random()*9999) + 1;
-          }
-
+                setTimeout(()=>{
+                    db.collection('messages_outs').find({"state": "PENDING"}).toArray(function(error, data) {
+                        if (error == null) {
+                            var _pendingMSG = [];
+                            data.forEach(function(each_msg){
+                                if(each_msg.state == 'pending' || each_msg.state == 'PENDING'){
+                                    _pendingMSG.push({
+                                        "id": each_msg.id,
+                                        "to": each_msg.to,
+                                        "content": each_msg.content
+                                    });
+                                }
+                            })
+                            res.json({messages: _pendingMSG});
+                        }else{
+                            res.json({messages: []});
+                        }
+                    })
+                },500);
         }
 });
 
@@ -116,22 +185,36 @@ function resetDatastore() {
     errors: [],
   };
 }
+//
+function updateSMSStatus(result){
+    db.collection("messages_outs").update(
+        {"id": result.id},
+        {$push: {"history": {"state": result.status, "reason": result.reason, "timestamp": new Date()}}}
+    )
+    db.collection("messages_outs").update(
+        {"id": result.id},
+        {$set: {"state": result.status}}
+    )
 
-function readBody(req) {
-  var body = '';
-  return new Promise(function(resolve, reject) {
-    req.on('data', function(data) {
-      body += data.toString();
-    });
-    req.on('end', function() {
-      resolve(body);
-    });
-    req.on('error', reject);
-  });
 }
 
-function push(arr, vals) {
-  arr.push.apply(arr, vals);
+function checkInResults(arr,id){
+    return arr.filter(function(echeck){ return echeck.id == id});
+}
+function create_task(content,send_to,type,state,register_id){
+    var sms_out = {
+        "id": uuidV1(),
+        "to": send_to,
+        "register_id": register_id,
+        "type": type,
+        "state": state,
+        "content": content,
+        "history": []
+    }
+
+    db.collection('messages_outs').insert(sms_out).then(function(err, data){
+        if(err == null) return true;
+    });
 }
 
 function handleAuth(req, res, options) {

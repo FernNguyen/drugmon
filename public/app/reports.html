@@ -46,14 +46,16 @@
                                         </div>
                                         <div class="member_list">
                                             <ul class="list-unstyled">
-                                                <li class="left clearfix" ng-repeat="(pindex,report) in list_register" ng-click="choose_report(report,pindex)" ng-class="{'active_li': detail_messages.index == pindex}">
+                                                <li class="left clearfix" ng-repeat="(pindex,report) in list_register | orderBy:'-createdAt'" ng-click="choose_report(report,pindex)" ng-class="{'active_li': detail_messages.index == pindex}">
                                                                      <span class="chat-img pull-left">
                                                                      <img src="/assets/images/default-avatar.png" alt="User Avatar" class="img-circle">
                                                                      </span>
                                                     <div class="chat-body clearfix">
                                                         <div class="header_sec ">
-                                                            <strong class="primary-font">{{report.from}}</strong> <strong class="pull-right">
-                                                            09:45AM</strong>
+                                                            <strong class="primary-font">{{report.from}}</strong>
+                                                            <span class="pull-right">
+                                                                {{momentjs(report.createdAt).format('MM-DD-YYYY')}}
+                                                            </span>
                                                         </div>
                                                         <div class="contact_sec">
                                                             {{report.sms_message.message}}
@@ -69,8 +71,7 @@
 
 
                                 <div class="col-sm-9 message_section">
-                                    <div class="row">
-
+                                    <div class="row" ng-if="detail_messages">
 
                                         <div  style="height:100% !important;">
 
@@ -78,6 +79,10 @@
                                                 <header class="panel-heading">
                                                     <span class="h4">
                                                         <i class="fa fa-phone-square" aria-hidden="true"></i>  {{detail_messages.from}}<br />
+                                                    </span>
+
+                                                    <span style="float: right;margin-top: -17px;font-size: 8pt;color: #716d6d;">
+                                                        Received {{momentjs(detail_messages.createdAt).format('HH:mm:ss MM-DD-YYYY')}}
                                                     </span>
                                                 </header><br>
                                                 <div class="row">
@@ -89,7 +94,7 @@
                                                                     <i class="fa fa-wpforms" aria-hidden="true"></i>
                                                                     Drug register</h4>
                                                                 <p class="list-group-item-text">
-                                                                    Drug code: MOXI - Quantity: 128
+                                                                    Drug code: {{detail_messages.raw_msg[1]}} - Quantity: {{detail_messages.raw_msg[2]}}
                                                                 </p>
 
                                                             </li>
@@ -112,46 +117,52 @@
                                                                 </h4>
                                                                 <p class="list-group-item-text">
                                                                 <div class="sms_send_body">
-                                                                    Thank you for registering saddsa. Pregnancy ID is 27947.
+                                                                    {{detail_messages.auto_message[0].content}}
                                                                     <br />
                                                                     <span>
-                                                                        <i class="fa fa-circle" aria-hidden="true" style="color:#4cae4c"></i>
-                                                                    sent 6 min ago to {{detail_messages.from}}
+                                                                        <i class="fa fa-circle status_{{detail_messages.auto_message[0].state}}" aria-hidden="true"></i>
+                                                                    {{detail_messages.auto_message[0].state}} to {{detail_messages.from}}
                                                                     </span>
                                                                 </div>
                                                                 </p>
 
                                                                 <br />
-                                                                <i class="fa fa-history" aria-hidden="true"></i>
+                                                                <div ng-if="detail_messages.tasks.length > 0">
+                                                                    <h4 class="list-group-item-heading">
+                                                                        <i class="fa fa-history" aria-hidden="true"></i>
+                                                                        Outgoing messages
+                                                                    </h4>
+                                                                    <p class="list-group-item-text">
 
-                                                                <strong>Outgoing messages:</strong>
 
-                                                                <ul class="list-group">
-                                                                    <li class="list-group-item" ng-repeat="msg in detail_messages.scheduled_tasks">
-                                                                        {{msg.type}}
-                                                                        <div class="sms_send_body">
-                                                                                <span ng-repeat="each_msg in msg.messages">
-                                                                                    {{each_msg.message}}
+                                                                    <ul class="list-group">
+                                                                        <li class="list-group-item" ng-repeat="msg in detail_messages.tasks" ng-if="msg.type != 'sms_default'">
+                                                                            <div class="sms_send_body">
+                                                                                <span>
+                                                                                    {{msg.content}}
                                                                                 </span>
-                                                                            <br />
-                                                                            <span>
-                                                                        <i class="fa fa-circle" aria-hidden="true" style="color:#5fc7c8"></i>
-                                                                    scheduled in 1 day to {{detail_messages.from}}
+                                                                                <br />
+                                                                                <span>
+                                                                        <i class="fa fa-circle status_{{msg.state}}" aria-hidden="true"></i>
+                                                                    {{msg.state}} send to {{detail_messages.from}}
                                                                     </span>
-                                                                        </div>
-                                                                    </li>
-                                                                </ul>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                    </p>
+                                                                </div>
+
 
 
 
                                                             </li>
-                                                            <li class="list-group-item">
-                                                                TEST
-                                                            </li>
+                                                            <!--<li class="list-group-item">-->
+                                                                <!--TEST-->
+                                                            <!--</li>-->
                                                         </ul>
 
 
-                                                        {{detail_messages}}
+                                                        <!--{{detail_messages}}-->
                                                     </div>
                                                 </div>
                                             </section>
