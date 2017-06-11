@@ -248,3 +248,7 @@
 }.status_SENT {
     color:#335dfd
 }
+
+.form_required{
+    color:red;
+}

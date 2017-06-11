@@ -10,7 +10,6 @@
             <div class="col-md-12" style="padding-left:5px;min-height: 900px">
 
                 <section>
-
                     <div class="main_section" style="width:100%">
                         <div class="container" style="width:100%;padding-left:0px;">
                             <div class="chat_container">
@@ -52,19 +51,18 @@
                                     <div class="row">
                                         <div class="new_message_head">
                                             <div class="pull-left">
-                                                <a class="btn btn-primary text-success btn_getmail" style="margin-top:-8px;" data-toggle="modal" data-show="true" data-target="#HFcreate">
+                                                <a class="btn btn-primary text-success btn_getmail" style="margin-top:-8px;" ng-click="open_newhf()">
                                                     <i class="fa fa-plus"></i>  New Facility <i class="fa fa-hospital-o"></i></a>
                                             </div>
 
-                                            <div class="pull-right"><div class="dropdown">
+                                            <div class="pull-right" ng-if="hf_selected"><div class="dropdown">
                                                 <button class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-cogs" aria-hidden="true"></i>  Setting
+                                                    <i class="fa fa-cogs" aria-hidden="true"></i>  Action
                                                     <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                                                    <li><a href="#"  ng-click="get_messages()">Check message</a></li>
-                                                    <li><a href="#">Delete</a></li>
-                                                    <li><a href="#">Logout</a></li>
+                                                    <li><a href="#" ng-click="open_edithf(hf_selected)">Edit</a></li>
+                                                    <li><a href="#" ng-click="delete_hf(hf_selected)">Delete</a></li>
                                                 </ul>
                                             </div></div>
                                         </div><!--new_message_head-->
@@ -180,8 +178,8 @@
                                                                         <td class="text-center"><span class="badge">{{drug.drug_eop}}</span></td>
                                                                         <td class="h5 text-primary text-center"><span class="badge">{{drug.drug_abs}}</span></td>
                                                                         <td class="h5 text-danger">
-                                                                            <a href="#" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i> Edit</a>
-                                                                            <a href="#" class="btn btn-xs btn-danger"><i class="fa fa-times"></i> Del</a>
+                                                                            <!--<a href="#" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i> Edit</a>-->
+                                                                            <a ng-click="remove_drug(drug)" class="btn btn-xs btn-danger"><i class="fa fa-times"></i> Remove</a>
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>
@@ -210,17 +208,28 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">New Health facility</h4>
+                <h4 class="modal-title">
+                    <span ng-if="!hf.is_edit">New Health facility</span>
+                    <span ng-if="hf.is_edit">Edit {{hf.name}}</span>
+                </h4>
             </div>
             <div class="modal-body">
 
+                <form name="myForm"></form>
+
                 <div class="row">
                     <div class="col-sm-12" style="height:300px;overflow:auto">
+                        <form name="new_hf">
                         <div class="form-group">
-                            Name of HF: <input class="form-control" name="name" type="text" ng-model="hf.name">
+                            <span class="form_required">(*)</span> Name of HF:
+                            <span class="form_required" ng-if="new_hf.myname.$invalid">Required</span>
+                            <input class="form-control" name="myname" type="text" ng-model="hf.name" required>
                         </div>
                         <div class="form-group">
-                            Phone number: <input class="form-control" name="phone" ng-model="hf.phone" type="text" >
+                            <span class="form_required">(*)</span> Phone number:
+                            <span class="form_required" ng-if="new_hf.myphone.$invalid">Required</span>
+
+                            <input class="form-control" name="myphone" ng-model="hf.phone" type="text" required>
                         </div>
                         <div class="form-group">
                             VDC/Municipality name: <input class="form-control" name="phone" ng-model="hf.vdc" type="text" >
@@ -240,18 +249,25 @@
                         </div>
                         <hr>
                         <div class="form-group">
-                            Contact Person: <input class="form-control" name="msg.content" ng-model="hf.person" type="text" >
+                            <span class="form_required">(*)</span> Contact Person:
+                            <span class="form_required" ng-if="new_hf.person.$invalid">Required</span>
+<input class="form-control" name="person" ng-model="hf.person" type="text" required>
                         </div>
                         <div class="form-group">
-                            Contact Person's Mobile: <input class="form-control" name="msg.content" ng-model="hf.person_mobile" type="text" >
-                        </div>
+                            <span class="form_required">(*)</span> <strong>Contact Person's Mobile: (eg: +84987777890)</strong>
+                            <span class="form_required" ng-if="new_hf.person_mobile.$invalid">Required</span>
 
+                            <input class="form-control" name="person_mobile" ng-model="hf.person_mobile" type="text" required>
+                        </div>
+                        </form>
                     </div>
                 </div>
+
             </div>
             <div class="modal-footer">
-                <button type="submit" ng-click="createNewHF(hf);" name="change" class="btn btn-success btn-s-xs">Create</button>
-                <button type="button" data-dismiss="modal" class="btn btn-info btn-s-xs"><i class="fa fa-chevron-left"></i> Back</button>
+                <button type="submit" ng-click="createNewHF(hf);" name="change" class="btn btn-success btn-s-xs" ng-class="{'disabled':new_hf.$invalid}" ng-if="!hf.is_edit"><i class="fa fa-floppy-o"></i> Create</button>
+                <button type="submit" ng-click="edit_hf(hf);" name="change" class="btn btn-danger btn-s-xs" ng-class="{'disabled':new_hf.$invalid}" ng-if="hf.is_edit"><i class="fa fa-floppy-o"></i>  Update</button>
+                <button type="button" data-dismiss="modal" class="btn btn-info btn-s-xs"><i class="fa fa-times"></i> Close</button>
 
             </div>
         </div>

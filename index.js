@@ -3,10 +3,19 @@ const bodyParser= require('body-parser');
 const request = require('request');
 const mongoose = require('mongoose');
 const uuidV1 = require('uuid/v1');
-
+const app_port = 8080;
 const instantMongoCrud = require('express-mongo-crud'); // require the module
+
+var MongoClient = require('mongodb').MongoClient
+    , assert = require('assert');
+
+
+const router = express.Router();
+
+
+
 var crud_options = { //specify options
-    host: 'localhost:80'
+    host: 'localhost:'+app_port
 }
 const SMSCheck = require('./utils.js');
 
@@ -18,7 +27,6 @@ mongoose.connect(mongoDB);
 var db = mongoose.connection;
 
 const app = express();
-
 app.use(bodyParser.json());
 
 require('./api')(app,db,SMSCheck,uuidV1); //Import API SMS_GATEWAY
@@ -39,10 +47,51 @@ app.post('/send_message', function(req,res){
 });
 app.get('/messages', function(req,res){
    res.json({});
+})
+app.delete('/db_delete/:collection/:object_id', (req,res)=>{
+
+    MongoClient.connect(mongoDB, function(err, db) {
+        var collection = db.collection(req.params.collection);
+        collection.deleteOne({ "_id" : mongoose.Types.ObjectId(req.params.object_id) }, function(err, result) {
+            if(err == null){
+                res.json({
+                    status: true
+                })
+            }else{
+                res.json({
+                    status: false
+                })
+            }
+        });
+
+    })
+
+        var deleteDocument = function(db, callback) {
+        var collection = db.collection(req.params.collection);
+        collection.deleteOne({ "_id" : req.params.object_id }, function(err, result) {
+            if(err == null){
+                console.log("Removed the document with the field a equal to 3");
+            }
+
+            callback(result);
+        });
+    }
+
+
+    //     .toArray(function(error, data) {
+    //     console.log(req.params.collection);
+    //     if (error == null) {
+    //         //res.json(data);
+    //         console.log(db.collection.toString())
+    //
+    //         //data.remove();
+    //     }else{
+    //        // res.json(error);
+    //     }
+    // })
 
 
 })
-
 // app.use('/', (req,res)=>{
 
 //     res.send(SMSCheck.validSmsSyntax('R312 33'));
@@ -63,6 +112,6 @@ app.get('/messages', function(req,res){
 
 app.use(instantMongoCrud(crud_options)); // use as middleware
 
-app.listen('80', () =>{
-    console.log('Server started at port: 80');
+app.listen(app_port, () =>{
+    console.log('Server started at port: '+app_port);
 });

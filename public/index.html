@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="/assets/css/bootstrap_calendar.css" type="text/css"/>
         <link rel="stylesheet" href="/assets/css/app.css" type="text/css"/>
         <link rel="stylesheet" href="/assets/css/messages.css" type="text/css"/>
+        <link rel="stylesheet" href="/assets/css/toaster.css" type="text/css"/>
+        <link rel="stylesheet" href="/assets/css/ngDialog.css" type="text/css"/>
 
 
         <script src="/assets/jquery-2.0.3.min.js"></script>
@@ -22,6 +24,9 @@
         <script data-require="angular.js@1.4.x" src="/lib/angular-1.4.9.js" data-semver="1.4.9"></script>
         <script type='text/javascript' src="/lib/angular-ui-router.min.js" charset="UTF-8"></script>
         <script type='text/javascript' src="/lib/angular-sanitize.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/lib/angular-animate.min.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/lib/ngDialog.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/assets/js/toaster.js" charset="UTF-8"></script>
 
         <!-- ui-select files -->
         <script src="/lib/select.min.js"></script>
@@ -40,6 +45,8 @@
 
     </head>
     <body>
+
+    <toaster-container toaster-options="{'position-class': 'toast-bottom-left'}"></toaster-container>
 
         <section class="vbox">
     <header class="bg-dark dk header navbar navbar-fixed-top-xs">
