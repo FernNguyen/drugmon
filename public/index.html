@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app ="myApp">
+<html ng-app ="drugmonApp">
     <head>
         <title>Drugmon Project</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -36,6 +36,8 @@
 
 
         <script type='text/javascript' src="/app.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/app/home.controller.js" charset="UTF-8"></script>
+        <script type='text/javascript' src="/app/account.controller.js" charset="UTF-8"></script>
         <script type='text/javascript' src="/app/app.controller.js" charset="UTF-8"></script>
         <script type='text/javascript' src="/app/hf.controller.js" charset="UTF-8"></script>
         <script type='text/javascript' src="/app/drugs.controller.js" charset="UTF-8"></script>
@@ -44,7 +46,7 @@
 
 
     </head>
-    <body>
+    <body ng-controller="homeCtrl">
 
     <toaster-container toaster-options="{'position-class': 'toast-bottom-left'}"></toaster-container>
 
@@ -79,7 +81,7 @@ Hello <strong>Admin</strong><b class="caret"></b>
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="#">Logout</a>
+                        <a ui-sref="login">Logout</a>
                     </li>
                 </ul>
             </li>
@@ -184,6 +186,7 @@ Hello <strong>Admin</strong><b class="caret"></b>
                     <div class="wrapper">Notification</div>
                 </aside>
             </section>
+        </section>
         </section>
     </body>
 </html>

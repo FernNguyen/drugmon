@@ -1,4 +1,4 @@
-angular.module('myApp').controller('HFCtrl', function($scope,$http,toaster,ConfirmBox,ModalControl ) {
+angular.module('drugmonApp').controller('HFCtrl', function($scope,$http,toaster,ConfirmBox,ModalControl ) {
   $scope.list_hf = [];
   $scope.msg = {};
   $scope.list_drug = [];
@@ -62,12 +62,12 @@ $scope.createNewHF = function(hf){
 }
 
 $scope.add_hfdrug = function(drug){
-
+console.log($scope.hf_selected);
     var _params = {
         "params": {
             "$eq": {
                 "drug_code": (drug.drug_push && drug.drug_push.selected ? drug.drug_push.selected.drug_code : ''),
-                "hf_id": $scope.hf_selected.hf_id
+                "hf_id": $scope.hf_selected._id
             }
         }
     }

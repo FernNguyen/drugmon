@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp', [
+angular.module('drugmonApp', [
   'ui.router','ngSanitize','ui.select','toaster','ngDialog'
 ]).config(function($stateProvider, $urlRouterProvider,$locationProvider) {
 
@@ -9,6 +9,10 @@ angular.module('myApp', [
         url: '/',
         templateUrl: 'app/app.html',
         controller: 'AppCtrl'
+    }).state('login', {
+        url: '/login.html',
+        templateUrl: 'app/login.html',
+        controller: 'AccountCtrl'
     }).state('reports', {
         url: '/reports.html',
         templateUrl: 'app/reports.html',
@@ -85,4 +89,3 @@ angular.module('myApp', [
     };
 });
 
-;

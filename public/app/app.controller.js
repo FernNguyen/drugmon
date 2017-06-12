@@ -1,4 +1,4 @@
-angular.module('myApp').controller('AppCtrl', function($scope,$http) {
+angular.module('drugmonApp').controller('AppCtrl', function($scope,$http) {
   $scope.list_mesages = [];
   $scope.msg = {};
 

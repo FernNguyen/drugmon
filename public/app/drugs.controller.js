@@ -1,4 +1,4 @@
-angular.module('myApp').controller('DrugsCtrl', function($scope,$http,toaster,ModalControl,ConfirmBox) {
+angular.module('drugmonApp').controller('DrugsCtrl', function($scope,$http,toaster,ModalControl,ConfirmBox) {
   $scope.list_drug = [];
   $scope.msg = {};
   $scope.drug = {
