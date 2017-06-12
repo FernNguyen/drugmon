@@ -1,4 +1,4 @@
-angular.module('myApp').controller('ReportCtrl', function($scope,$http) {
+angular.module('drugmonApp').controller('ReportCtrl', function($scope,$http) {
 
     $scope.list_register = [];
     $scope.msg = {};

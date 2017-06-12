@@ -9,3 +9,11 @@ angular.module('drugmonApp').controller('homeCtrl', function($scope,$rootScope,$
 
 
 })
+
+angular.module('drugmonApp').controller('SettingCtrl', function($scope,$rootScope,$http,$stateParams,$location) {
+
+    console.log("Home CTRL");
+
+
+
+})
