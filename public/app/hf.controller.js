@@ -1,18 +1,29 @@
-angular.module('drugmonApp').controller('HFCtrl', function($scope,$http,toaster,ConfirmBox,ModalControl ) {
+angular.module('drugmonApp').controller('HFCtrl', function($scope,$http,toaster,ConfirmBox,ModalControl,$timeout ) {
   $scope.list_hf = [];
   $scope.msg = {};
   $scope.list_drug = [];
   $scope.hf_drugs = [];
   $scope.newdrug = {};
+
+
+  $scope.findHFbyFilter = function(filter){
+      if(filter == 'hp') filter = 'hf'
+      else if(filter == 'hf') filter = 'dt'
+      var f_data = {
+              "params": {"$eq": {"place_type": filter}}
+          }
+      return (
+          $http.post('/healthfacility/list', f_data)
+      )
+  }
+
 $scope.get_hfdetail = function(){
   $http.post('/healthfacility/list', {}).then(function(rs){
       $scope.list_hf = rs.data.docs;
   }, function(){
       console.log('Error!');
   })
-
-
-    //Todo: Get drugs
+    // //Todo: Get drugs
     $http.post('/drugs/list', {}).then(function(rs){
         $scope.list_drug = [];
         $scope.list_drug = rs.data.docs;
@@ -22,14 +33,36 @@ $scope.get_hfdetail = function(){
 
 }
 
+//Todo: Preload
 $scope.get_hfdetail();
 
-    $scope.hf_selected = undefined;
-    $scope.choose_hf = function (hf) {
-        $scope.hf_selected = hf;
-        $scope.get_hfdrugs(hf._id);
-    }
 
+//Todo: Selected HF detail
+$scope.hf_selected = undefined;
+$scope.choose_hf = function (hf) {
+    $scope.hf_selected = hf;
+    $scope.get_hfdrugs(hf._id);
+}
+
+
+    $scope.set_active_place = function(type){
+        $scope.hf.place_type = type;
+        // $scope.hf.reporting_center_list = $scope.findHFbyFilter(type);
+
+        $timeout(function(){
+            var promise = $scope.findHFbyFilter(type);
+
+            promise.then( function(result) {
+                $scope.hf.reporting_center_list = result.data.docs;
+            }).catch ( function(result) {
+                $scope.hf.reporting_center_list = []
+            });
+        },100)
+
+
+
+        console.log($scope.hf);
+    }
 
 
     //Todo: Find drug by HF ID
@@ -49,6 +82,17 @@ $scope.get_hfdetail();
     }
 
 $scope.createNewHF = function(hf){
+        if(hf.reporting_center_list && hf.reporting_center_list.selected){
+            hf.reporting_center = {
+                "_id": hf.reporting_center_list.selected._id,
+                "name": hf.reporting_center_list.selected.name,
+                "person": hf.reporting_center_list.selected.person,
+                "person_mobile": hf.reporting_center_list.selected.person_mobile
+            }
+            // hf.reporting_center_list = undefined;
+        }
+    hf.is_edit = undefined;
+
     var _xdata = {
         "data": hf
     };
@@ -62,7 +106,6 @@ $scope.createNewHF = function(hf){
 }
 
 $scope.add_hfdrug = function(drug){
-console.log($scope.hf_selected);
     var _params = {
         "params": {
             "$eq": {
@@ -112,10 +155,21 @@ $scope.remove_drug = function (drug) {
 }
 
 $scope.edit_hf = function (hf_selected) {
+console.log(hf_selected);
+    if(hf_selected.reporting_center_list && hf_selected.reporting_center_list.selected){
+        hf_selected.reporting_center = {
+            "_id": hf_selected.reporting_center_list.selected._id,
+            "name": hf_selected.reporting_center_list.selected.name,
+            "person": hf_selected.reporting_center_list.selected.person,
+            "person_mobile": hf_selected.reporting_center_list.selected.person_mobile
+        }
+        // hf_selected.reporting_center_list = undefined;
+    }
+    hf_selected.is_edit = undefined;
     var _xdata = {
         "data": hf_selected
     };
-
+console.log(hf_selected);
     $http.put('/healthfacility/'+hf_selected._id, _xdata).then(function(rs){
         if(rs.data.responseCode == 0){
             toaster.pop('success', "Success ", hf_selected.name+" have successfully updated!", 5000);
@@ -142,6 +196,8 @@ $scope.delete_hf = function (hf_selected) {
         $('#HFcreate').modal('show');
         $scope.hf = {};
         $scope.hf.is_edit = false;
+        //$scope.hf.place_type = 'dt';
+        $scope.set_active_place('dt');
     }
 
 

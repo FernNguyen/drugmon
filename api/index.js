@@ -72,7 +72,7 @@ app.use('/api/app', function(req, res) {
                        //After update ABS
                     if(_request_qty <= parseInt(_druginfo.drug_eop)){
                         //General task
-                        var _top_stock_mobile = _druginfo.hf_detail.person_mobile;
+                        var _top_stock_mobile = _druginfo.hf_detail.reporting_center.person_mobile;
                         var _hf_stock_mobile = _druginfo.hf_detail.person_mobile;
                         _task_register.push(create_task(_druginfo.hf_detail.name+' has low stock of '+_druginfo.drug_code,_top_stock_mobile,'sms_out','PENDING',drugRegID));
                         _task_register.push(create_task('Your balance stock is less than EOP ('+_druginfo.drug_eop+') level',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
@@ -85,12 +85,12 @@ app.use('/api/app', function(req, res) {
                                 }
                             )
 
-                            _msgTasks ={
-                                "id": _transCode,
-                                "to": eachDB.from,
-                                "type": "success",
-                                "content": "Register Succeed! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2]
-                            };
+                            // _msgTasks ={
+                            //     "id": _transCode,
+                            //     "to": eachDB.from,
+                            //     "type": "success",
+                            //     "content": "Register Succeed! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2]
+                            // };
 
                         }else{
                             //Not foundddddddd
@@ -100,7 +100,6 @@ app.use('/api/app', function(req, res) {
                                 "type": "reject",
                                 "content": "Drug not found! Please check your DRUG CODE: "+_smsSyntax[1]
                             };
-
                             _task_register.push(create_task("Drug not found! Please check your DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2],eachDB.from,'sms_default','PENDING',drugRegID));
 
                         }

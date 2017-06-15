@@ -4,7 +4,7 @@
             <ul class="breadcrumb no-border no-radius b-b b-light pull-in">
                 <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
                 <li class="active">
-                    People and Health
+                    People and Place
                 </li>
             </ul>
             <div class="col-md-12" style="padding-left:5px;min-height: 900px">
@@ -52,7 +52,7 @@
                                         <div class="new_message_head">
                                             <div class="pull-left">
                                                 <a class="btn btn-primary text-success btn_getmail" style="margin-top:-8px;" ng-click="open_newhf()">
-                                                    <i class="fa fa-plus"></i>  New Facility <i class="fa fa-hospital-o"></i></a>
+                                                    <i class="fa fa-plus"></i>  New Place/Facility <i class="fa fa-hospital-o"></i></a>
                                             </div>
 
                                             <div class="pull-right" ng-if="hf_selected"><div class="dropdown">
@@ -99,7 +99,7 @@
 
                                                     <div class="form-group">
                                                         Reporting center:
-                                                        {{hf_selected.reporting_center}}
+                                                        <button ng-if="hf_selected.reporting_center" class="btn btn-danger btn-sm" ng-click="choose_hf(hf_selected.reporting_center)">{{hf_selected.reporting_center.name}}</button>
                                                     </div>
                                                         <div class="form-group">
                                                             Notes:
@@ -209,7 +209,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">
-                    <span ng-if="!hf.is_edit">New Health facility</span>
+                    <span ng-if="!hf.is_edit">New Place/Health facility</span>
                     <span ng-if="hf.is_edit">Edit {{hf.name}}</span>
                 </h4>
             </div>
@@ -218,7 +218,14 @@
                 <form name="myForm"></form>
 
                 <div class="row">
-                    <div class="col-sm-12" style="height:300px;overflow:auto">
+                    <div class="col-sm-12" style="height:450px;overflow:auto">
+                        <!--<div class="form-group">-->
+                            <!--Type: <br />-->
+                            <!--<a class="btn btn-default " ng-class="{'btn-success':hf.place_type =='dt'}" ng-click="set_active_place('dt')"><i class="fa fa-building"></i> District</a>-->
+                            <!--<a class="btn btn-default " ng-class="{'btn-success':hf.place_type =='hf'}" ng-click="set_active_place('hf')"><i class="fa fa-hospital-o"></i> Health center</a>-->
+                            <!--<a class="btn btn-default " ng-class="{'btn-success':hf.place_type =='hp'}" ng-click="set_active_place('hp')"><i class="fa fa fa-home"></i> Health post</a>-->
+                        <!--</div>-->
+
                         <form name="new_hf">
                         <div class="form-group">
                             <span class="form_required">(*)</span> Name of HF:
@@ -234,15 +241,20 @@
                         <div class="form-group">
                             VDC/Municipality name: <input class="form-control" name="phone" ng-model="hf.vdc" type="text" >
                         </div>
+                        <!--<div class="form-group">-->
+                            <!--Address: <input class="form-control" name="address" ng-model="hf.address" type="text" >-->
+                        <!--</div>-->
                         <div class="form-group">
-                            Address: <input class="form-control" name="address" ng-model="hf.address" type="text" >
+                            Reporting Center:
+                            <ui-select ng-model="hf.reporting_center_list.selected" theme="selectize" title="Choose report center">
+                                <ui-select-match placeholder="Select or search a HF...">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="rp_center in list_hf | filter: $select.search">
+                                    <span ng-bind-html="rp_center.name | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+
                         </div>
-                        <div class="form-group">
-                            Reporting Center: <input class="form-control" name="phone" ng-model="hf.reporting_center" type="text" >
-                        </div>
-                        <div class="form-group">
-                            Type of Heath Facility: <input class="form-control" name="type" ng-model="hf.type" type="text" >
-                        </div>
+
                         <div class="form-group">
                             Heath Facility notes:
                             <textarea class="form-control" name="type" ng-model="hf.notes" type="text" ></textarea>

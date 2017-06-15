@@ -24,7 +24,13 @@ module.exports = function(mongoose){
                 "phone":{type: String},
                 "reporting_center":{type: String},
                 "type":{type: String},
-                "vdc":{type: String}
+                "vdc":{type: String},
+                "reporting_center": {
+                    "_id": {type: String},
+                    "name": {type: String},
+                    "person": {type: String},
+                    "person_mobile": {type: String},
+                }
             }
 
         } , {
