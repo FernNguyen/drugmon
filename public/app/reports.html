@@ -111,22 +111,22 @@
 
                                                             </li>
                                                             <li class="list-group-item">
-                                                                <h4 class="list-group-item-heading">
-                                                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                                                                    Automated reply
-                                                                </h4>
-                                                                <p class="list-group-item-text">
-                                                                <div class="sms_send_body">
-                                                                    {{detail_messages.auto_message[0].content}}
-                                                                    <br />
-                                                                    <span>
-                                                                        <i class="fa fa-circle status_{{detail_messages.auto_message[0].state}}" aria-hidden="true"></i>
-                                                                    {{detail_messages.auto_message[0].state}} to {{detail_messages.from}}
-                                                                    </span>
-                                                                </div>
-                                                                </p>
+                                                                <!--<h4 class="list-group-item-heading">-->
+                                                                    <!--<i class="fa fa-paper-plane" aria-hidden="true"></i>-->
+                                                                    <!--Automated reply-->
+                                                                <!--</h4>-->
+                                                                <!--<p class="list-group-item-text">-->
+                                                                <!--<div class="sms_send_body">-->
+                                                                    <!--{{detail_messages.auto_message[0].content}}-->
+                                                                    <!--<br />-->
+                                                                    <!--<span>-->
+                                                                        <!--<i class="fa fa-circle status_{{detail_messages.auto_message[0].state}}" aria-hidden="true"></i>-->
+                                                                    <!--{{detail_messages.auto_message[0].state}} to {{detail_messages.from}}-->
+                                                                    <!--</span>-->
+                                                                <!--</div>-->
+                                                                <!--</p>-->
 
-                                                                <br />
+                                                                <!--<br />-->
                                                                 <div ng-if="detail_messages.tasks.length > 0">
                                                                     <h4 class="list-group-item-heading">
                                                                         <i class="fa fa-history" aria-hidden="true"></i>
@@ -144,7 +144,8 @@
                                                                                 <br />
                                                                                 <span>
                                                                         <i class="fa fa-circle status_{{msg.state}}" aria-hidden="true"></i>
-                                                                    {{msg.state}} to {{detail_messages.from}}
+                                                                    {{msg.state}} to {{msg.to}}
+                                                                                    <span ng-if="msg.state == 'FAILED'">(Reason: {{msg.history}})</span>
                                                                     </span>
                                                                             </div>
                                                                         </li>

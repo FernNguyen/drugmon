@@ -56,7 +56,7 @@ app.use('/api/app', function(req, res) {
                 db.collection('hfdrugs').find({"drug_code": _smsSyntax[1].toUpperCase(),"hf_detail.person_mobile": eachDB.from}).toArray(function(error, data){
                     if(error == null){
                         if(data.length > 0){
-                            _task_register.push(create_task("Register Succeed! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2],eachDB.from,'sms_default','PENDING',drugRegID));
+                            //_task_register.push(create_task("Register Succeed! DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2],eachDB.from,'sms_default','PENDING',drugRegID));
                             //Found it
                             var _request_qty = parseInt(_smsSyntax[2]),
                                 _druginfo = data[0];
@@ -70,10 +70,11 @@ app.use('/api/app', function(req, res) {
                         //Can't update
                     }else{
                        //After update ABS
-                    if(_request_qty <= parseInt(_druginfo.drug_eop)){
-                        //General task
                         var _top_stock_mobile = _druginfo.hf_detail.reporting_center.person_mobile;
                         var _hf_stock_mobile = _druginfo.hf_detail.person_mobile;
+
+                        if(_request_qty <= parseInt(_druginfo.drug_eop)){
+                        //General task
                         _task_register.push(create_task(_druginfo.hf_detail.name+' has low stock of '+_druginfo.drug_code,_top_stock_mobile,'sms_out','PENDING',drugRegID));
                         _task_register.push(create_task('Your balance stock is less than EOP ('+_druginfo.drug_eop+') level',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
                     }else if(parseInt(_druginfo.drug_asl) > _request_qty && _request_qty > parseInt(_druginfo.drug_eop)){
