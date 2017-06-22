@@ -21,10 +21,11 @@ app.use('/api/app', function(req, res) {
         var _responseMSG = [];
 
         console.log('_SMS_GATEWAY_POST_');
+        console.log(_dataDB);
         _dataDB.forEach(function(eachDB){
             //update View
             eachDB.type = "sms_in";
-
+            eachDB.content = eachDB.content.replace(/\n/g, '');
             if(SMSCheck.validSmsSyntax(eachDB.content) == true){
                 var _smsSyntax = eachDB.content.split(' '),
                     _transCode = uuidV1(),
@@ -76,11 +77,11 @@ app.use('/api/app', function(req, res) {
                         if(_request_qty <= parseInt(_druginfo.drug_eop)){
                         //General task
                         _task_register.push(create_task(_druginfo.hf_detail.name+' has low stock of '+_druginfo.drug_code,_top_stock_mobile,'sms_out','PENDING',drugRegID));
-                        _task_register.push(create_task('Your balance stock is less than EOP ('+_druginfo.drug_eop+') level',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
+                        _task_register.push(create_task('Register Succeed! DRUG CODE: '+_smsSyntax[1].toUpperCase()+', QTY: '+_smsSyntax[2]+'. Your balance stock is less than EOP ('+_druginfo.drug_eop+') level.',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
                     }else if(parseInt(_druginfo.drug_asl) > _request_qty && _request_qty > parseInt(_druginfo.drug_eop)){
-                        _task_register.push(create_task('Please request drug in quarterly request',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
+                        _task_register.push(create_task('Register Succeed! DRUG CODE: '+_smsSyntax[1].toUpperCase()+', QTY: '+_smsSyntax[2]+'. Please request drug in quarterly request.',_hf_stock_mobile,'sms_out','PENDING',drugRegID));
                     }else if(_request_qty > parseInt(_druginfo.drug_asl)){
-                        _task_register.push(create_task('You have sufficient stock',_hf_stock_mobile,'PENDING',drugRegID));
+                        _task_register.push(create_task('Register Succeed! DRUG CODE: '+_smsSyntax[1].toUpperCase()+', QTY: '+_smsSyntax[2]+'. You have sufficient stock.',_hf_stock_mobile,'PENDING',drugRegID));
                     }
                     }
                                 }
@@ -99,9 +100,9 @@ app.use('/api/app', function(req, res) {
                                 "id": _transCode,
                                 "to": eachDB.from,
                                 "type": "reject",
-                                "content": "Drug not found! Please check your DRUG CODE: "+_smsSyntax[1]
+                                "content": "Drug not found! Please check your DRUG CODE: "+_smsSyntax[1].toUpperCase()
                             };
-                            _task_register.push(create_task("Drug not found! Please check your DRUG CODE: "+_smsSyntax[1]+", QTY: "+_smsSyntax[2],eachDB.from,'sms_default','PENDING',drugRegID));
+                            _task_register.push(create_task("Drug not found! Please check your DRUG CODE: "+_smsSyntax[1].toUpperCase()+", QTY: "+_smsSyntax[2],eachDB.from,'sms_default','PENDING',drugRegID));
 
                         }
 
