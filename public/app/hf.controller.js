@@ -155,7 +155,6 @@ $scope.remove_drug = function (drug) {
 }
 
 $scope.edit_hf = function (hf_selected) {
-console.log(hf_selected);
     if(hf_selected.reporting_center_list && hf_selected.reporting_center_list.selected){
         hf_selected.reporting_center = {
             "_id": hf_selected.reporting_center_list.selected._id,
@@ -169,7 +168,6 @@ console.log(hf_selected);
     var _xdata = {
         "data": hf_selected
     };
-console.log(hf_selected);
     $http.put('/healthfacility/'+hf_selected._id, _xdata).then(function(rs){
         if(rs.data.responseCode == 0){
             toaster.pop('success', "Success ", hf_selected.name+" have successfully updated!", 5000);

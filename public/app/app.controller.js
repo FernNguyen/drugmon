@@ -1,66 +1,74 @@
 angular.module('drugmonApp').controller('AppCtrl', function($scope,$http) {
-  $scope.list_mesages = [];
-  $scope.msg = {};
 
-$scope.get_messages = function(){
-  $http.post('/messages/list', {}).then(function(rs){
+    $scope.monthly_reporting_ratio = {};
+    $scope.total_number = {};
 
-      var _tmp_obj = groupArrBy(rs.data.docs,'from');
+    $scope.monthly_reporting_ratio.type = "ColumnChart";
+    $scope.total_number.type = "PieChart";
 
-      for (var o in _tmp_obj){
-          $scope.list_mesages.push({
-              from: o,
-              messages:_tmp_obj[o]
-          });
-      }
-      // console.log($scope.list_mesages);
-  }, function(){
-      console.log('Error!');
-  })
-}
+    $scope.total_number.data = {"cols": [
+        {id: "t", label: "Topping", type: "string"},
+        {id: "s", label: "Slices", type: "number"}
+    ], "rows": [
+        {c: [
+            {v: "Reporting Center"},
+            {v: 3},
+        ]},
+        {c: [
+            {v: "Health Post"},
+            {v: 31}
+        ]}
+    ]};
 
-    $scope.detail_messages = $scope.list_mesages[0];
-    $scope.set_active_index = function(pindex){
-        $scope.detail_messages = $scope.list_mesages[pindex];
-        $scope.detail_messages.index = pindex;
-        console.log($scope.detail_messages);
-    }
+    $scope.monthly_reporting_ratio.data = {"cols": [
+        {id: "t", label: "Topping", type: "string"},
+        {id: "s", label: "Health Post", type: "number"}
+    ], "rows": [
+        {c: [
+            {v: "09/2016"},
+            {v: 18},
+            {v: 18}
+        ]},{c: [
+            {v: "10/2016"},
+            {v: 5},
+        ]},{c: [
+            {v: "11/2016"},
+            {v: 22},
+        ]},{c: [
+            {v: "12/2016"},
+            {v: 19},
+        ]},{c: [
+            {v: "01/2017"},
+            {v: 26},
+        ]},{c: [
+            {v: "03/2017"},
+            {v: 32},
+        ]},{c: [
+            {v: "03/2017"},
+            {v: 32},
+        ]},{c: [
+            {v: "04/2017"},
+            {v: 10},
+        ]},
+        {c: [
+            {v: "05/2017"},
+            {v: 17}
+        ]},
+        {c: [
+            {v: "06/2017"},
+            {v: 22},
+        ]},
+        {c: [
+            {v: "07/2017"},
+            {v: 10},
+        ]}
+    ]};
 
-$scope.get_messages();
-
-$scope.sendMsg = function(msg){
-    var _xdata = {
-        "data": {
-        "id": generateUUID(),
-        "to": msg.to,
-        "content": msg.content,
-        "state": "PENDING",
-        "type": "sms_custom",
-        "history": []
-        }
-    }
-    $http.post('/messages_out', _xdata).then(function(rs){
-        if(rs.data.status === true) alert('Sent!')
-    })
-
-}
-
-    var groupArrBy = function(xs, key) {
-        return xs.reduce(function(rv, x) {
-            (rv[x[key]] = rv[x[key]] || []).push(x);
-            return rv;
-        }, {});
+    $scope.monthly_reporting_ratio.options = {
+        'title': '',
+        'isStacked':'normal',
+        "displayExactValues": true,
     };
-    function generateUUID () { // Public Domain/MIT
-        var d = new Date().getTime();
-        if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
-            d += performance.now(); //use high-precision timer if available
-        }
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (d + Math.random() * 16) % 16 | 0;
-            d = Math.floor(d / 16);
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    }
+
 
 });

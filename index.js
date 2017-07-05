@@ -3,8 +3,10 @@ const bodyParser= require('body-parser');
 const request = require('request');
 const mongoose = require('mongoose');
 const uuidV1 = require('uuid/v1');
+const sha1 = require('sha1');
 const app_port = 8080;
 const instantMongoCrud = require('express-mongo-crud'); // require the module
+const jwt        = require("jsonwebtoken");
 
 var MongoClient = require('mongodb').MongoClient
     , assert = require('assert');
@@ -22,6 +24,12 @@ const SMSCheck = require('./utils.js');
 
 var mongoDB = 'mongodb://127.0.0.1/drugmon';
 mongoose.connect(mongoDB);
+var Schema = mongoose.Schema;
+
+var User = new Schema ({
+    username : String,
+    password : String
+});
 
 //Get the default connection
 var db = mongoose.connection;
@@ -41,6 +49,99 @@ app.get('/*.html', function(req, res){
 //     console.log('GETTTT');
 //   res.redirect('/index.html');
 // });
+
+//Login func
+app.post('/login', function(req,res){
+    db.collection('accounts').findOne({"username": req.body.username}, function(err, user){
+
+        if (err) throw err;
+        if (!user) {
+            res.json({ status: false, message: 'Authentication failed. User not found.' });
+        } else if (user) {
+            console.log(user);
+            // check if password matches
+            if (user.password != sha1(req.body.password)) {
+                res.json({ status: false, message: 'Authentication failed. Wrong password.' });
+            } else {
+
+                // if user is found and password is right
+                // create a token
+                var res_user = {
+                    username: user.username,
+                    is_admin: user.is_admin
+                }
+                var token = jwt.sign(res_user, 'drugmonHN@2017', {
+                    expiresIn: 1440 // expires in 24 hours
+                });
+
+                // return the information including token as JSON
+                res.json({
+                    status: true,
+                    message: 'Login successful, redirecting to the dashboard!',
+                    token: token,
+                    user_info: res_user
+                });
+            }
+
+        }
+
+    })
+})
+
+app.post('/accounts', function(req, res){
+    var data_req = req.body;
+    var data_find = {};
+    if(data_req.find_type && data_req.find_type == 'check_exist'){
+        data_find = {
+            "username": data_req.username
+        }
+    }
+    else{
+        data_find = {};
+    }
+
+    db.collection('accounts').find(data_find).toArray(function (err,users) {
+        if(err) throw err;
+        if(users){
+            res.json({
+                status: true,
+                results: users,
+            })
+        }
+    })
+})
+
+app.post('/add_account', function(req,res){
+    var data_req = req.body;
+    data_req.createdAt = new Date();
+    data_req.updatedAt = new Date();
+    data_req.password = sha1(data_req.password);
+
+    db.collection('accounts').findOne({'username': data_req.username}, function(err,user){
+        if(err) throw err;
+        if(!user){
+            db.collection('accounts').insert(data_req).then(function(data_reg) {
+                if(data_reg.result.ok == 1){
+                    res.json({
+                        status: true,
+                        message: "Account added!"
+                    })
+                }else{
+                    res.json({
+                        status: false,
+                        message: "Failed to add!"
+                    })
+                }
+            })
+        }else{
+            res.json({
+                status: false,
+                message: "Account existed!"
+            })
+        }
+    })
+
+})
 
 app.post('/send_message', function(req,res){
     console.log(req.body);

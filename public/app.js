@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('drugmonApp', [
-  'ui.router','ngSanitize','ui.select','toaster','ngDialog'
+  'ui.router','ngSanitize','ngCookies','ui.select','toaster','ngDialog','googlechart','angular-sha1'
 ]).config(function($stateProvider, $urlRouterProvider,$locationProvider) {
 
 
@@ -9,6 +9,10 @@ angular.module('drugmonApp', [
         url: '/',
         templateUrl: 'app/app.html',
         controller: 'AppCtrl'
+    }).state('messages', {
+        url: '/messages.html',
+        templateUrl: 'app/messages.html',
+        controller: 'MessagesCtrl'
     }).state('login', {
         url: '/login.html',
         templateUrl: 'app/login.html',
@@ -29,6 +33,10 @@ angular.module('drugmonApp', [
         url: '/drugs.html',
         templateUrl: 'app/drugs.html',
         controller: 'DrugsCtrl'
+    }).state('userregister', {
+        url: '/register-drugs.html',
+        templateUrl: 'app/register_drugs.html',
+        controller: 'RegisterDrugCtrl'
     });
     // $locationProvider.html5Mode(true);
 
@@ -39,7 +47,24 @@ angular.module('drugmonApp', [
     });
 
 
-}).run(function () {
+}).run(function ($rootScope, $http, $location, $cookies,$state) {
+    // keep user logged in after page refresh
+    var user_logged = ($cookies.get('currentUser') ? JSON.parse($cookies.get('currentUser')) : {});
+    $rootScope.user_logged = user_logged;
+    if (user_logged) {
+        $http.defaults.headers.common['Authorization'] = 'Bearer ' + user_logged.token;
+    }
+
+    // redirect to login page if not logged in and trying to access a restricted page
+    $rootScope.$on('$locationChangeStart', function (event, next, current) {
+        var publicPages = ['/login.html'];
+        var restrictedPage = publicPages.indexOf($location.path()) === -1;
+        if (restrictedPage && !$cookies.get('currentUser')) {
+            $state.go('login');
+            $location.path('/login.html');
+            return;
+        }
+    });
 
 }).factory('ModalControl', function(){
     return {
