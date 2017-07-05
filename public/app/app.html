@@ -16,7 +16,10 @@
                                         <div class="container" style="width:100%;padding-left:0px;">
 
                                             <div class="panel panel-primary">
-                                                <div class="panel-heading">MONTHLY REPORTING RATIO</div>
+                                                <div class="panel-heading" style="text-align: center;"><strong>MONTHLY REPORTING RATIO</strong>
+
+                                                    <!--<span class="pull-right" style=" margin-top: -5px;"><button type="button" class="btn btn-sm btn-danger" ng-click="get_data_reports()"><i class="fa fa-refresh"></i> Refresh</button> </span>-->
+                                                </div>
                                                 <div class="panel-body">
                                                     <div google-chart chart="monthly_reporting_ratio"></div>
                                                 </div>
@@ -25,15 +28,46 @@
                                             <div class="row">
                                                 <div class="col-md-8">
                                                     <div class="panel panel-danger">
-                                                        <div class="panel-heading">LAST MONTH'S STOCK SITUATION</div>
-                                                        <div class="panel-body">
-                                                           dsdsdsd
+                                                        <div class="panel-heading"><strong>LAST MONTH'S STOCK SITUATION</strong>
+                                                        <span class="pull-right">Show report of
+
+                                                            <select ng-model="drug_selected" >
+                                                                <option ng-repeat="drug in drugs" value="{{drug.drug_code}}">{{drug.drug_name}} ({{drug.drug_code}})</option>
+                                                            </select>
+
+                                                            <button ng-click="monthly_rp_by_drug(drug_selected)" class="btn btn-xs btn-danger">Process</button>
+                                                        </span>
+                                                        </div>
+                                                        <div class="panel-body report" style="height: 230px">
+                                                            <table class="table ">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>HEATH POST IN</th>
+                                                                    <th class="text-right" ng-repeat="month in by_drugs_reports">{{month.month}}</th>
+                                                                    <th class="text-center">COMPARE</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr class="table-warning"  ng-repeat="status in by_drugs_reports">
+                                                                    <th scope="row" style="padding: 21px;">{{status.name}}</th>
+                                                                    <td class="text-right" style="vertical-align: inherit">{{status.percent_lastmonth}}%</td>
+                                                                    <td class="text-right" style="vertical-align: inherit">{{status.percent_current}}%</td>
+                                                                    <td class="text-center" style="vertical-align: inherit">
+                                                                        <i class="fa fa-arrow-up" style="color:green;" ng-if="status.status == 'up'"></i>
+                                                                        <i class="fa fa-arrow-down" style="color:red;" ng-if="status.status == 'down'"></i>
+                                                                        <i class="fa fa-arrows-h" ng-if="status.status == '-'"></i>
+                                                                    </td>
+                                                                </tr>
+
+
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="panel panel-warning">
-                                                        <div class="panel-heading">TOTAL NUMBER</div>
+                                                        <div class="panel-heading" style="text-align: center;"><strong>TOTAL NUMBER</strong></div>
                                                         <div class="panel-body">
                                                             <div google-chart chart="total_number"></div>
                                                         </div>
@@ -41,9 +75,39 @@
                                                 </div>
                                             </div>
                                             <div class="panel panel-primary">
-                                                <div class="panel-heading">MONTHLY EOP</div>
+                                                <div class="panel-heading" style="text-align: center;"><strong>MONTHLY EOP</strong></div>
                                                 <div class="panel-body">
-                                                    TX
+
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <div style="width: 100%;
+    text-align: right;
+    padding: 50px;">
+                                                            <button class="btn btn-primary">
+                                                                <i class="fa fa-caret-left" aria-hidden="true"></i>
+                                                            </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="panel panel-default monthly_eop">
+                                                                <div class="panel-body">
+                                                                    {{by_drugs_reports[1].total_eop_month}}
+                                                                    <p>{{by_drugs_reports[1].month}}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div style="width: 100%;
+    text-align: left;
+    padding: 50px;">
+                                                            <button class="btn btn-primary" disabled>
+                                                                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                                            </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
                                                 </div>
                                             </div>
 

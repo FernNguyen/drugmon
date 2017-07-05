@@ -52,3 +52,22 @@
 	background-color: #25313E;
 }
 /********************************************************************/
+
+.monthly_eop {
+	width: 100%;
+	margin: auto;
+	text-align: center;
+	font-size: 58px;
+	border: 3px solid #1BABAC !important;
+	color: #1BABAC;
+	font-weight: bold;
+	background: #F4FAFA;
+}
+.monthly_eop .panel-body > p{
+	font-size:10pt;
+	color:#000000;
+}
+
+.report > td, th {
+	/*padding: 21px !important;;*/
+}

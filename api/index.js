@@ -70,6 +70,23 @@ app.use('/api/app', function(req, res) {
                     if(update_err){
                         //Can't update
                     }else{
+                        //Insert to HISTORY
+
+                        var _drug_histories = _druginfo;
+                        _drug_histories._id = undefined;
+                        _drug_histories.drug_abs_old = _druginfo.drug_abs;
+                        _drug_histories.drug_abs = _request_qty;
+                        _drug_histories.createdAt = new Date();
+                        _drug_histories.updatedAt = new Date();
+
+                        db.collection('drug_histories').insert(_drug_histories).then(function(history){
+                            if(history.result.ok == 1){
+                                //success
+                            }
+                            console.log(history);
+                        })
+
+
                        //After update ABS
                         var _top_stock_mobile = _druginfo.hf_detail.reporting_center.person_mobile;
                         var _hf_stock_mobile = _druginfo.hf_detail.person_mobile;
