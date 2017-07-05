@@ -11,7 +11,7 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
             $scope.drugs = [];
             $scope.drugs = rs.data.docs;
 
-            if($scope.drugs.length == 1){
+            if($scope.drugs.length >= 1){
                 $scope.monthly_rp_by_drug($scope.drugs[0].drug_code);
                 $scope.drug_selected = $scope.drugs[0];
             }
