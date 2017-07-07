@@ -29,20 +29,20 @@
                                                 <div class="col-md-8">
                                                     <div class="panel panel-danger">
                                                         <div class="panel-heading"><strong>LAST MONTH'S STOCK SITUATION</strong>
-                                                        <span class="pull-right">Show report of
+                                                        <span class="pull-right">Month:
 
                                                             <select ng-model="drug_selected" >
                                                                 <option ng-repeat="drug in drugs" value="{{drug.drug_code}}">{{drug.drug_name}} ({{drug.drug_code}})</option>
                                                             </select>
 
-                                                            <button ng-click="monthly_rp_by_drug(drug_selected)" class="btn btn-xs btn-danger">Process</button>
+                                                            <button ng-click="monthly_rp_by_drug(drug_selected)" class="btn btn-xs btn-danger">OK</button>
                                                         </span>
                                                         </div>
                                                         <div class="panel-body report" style="height: 230px">
                                                             <table class="table ">
                                                                 <thead>
                                                                 <tr>
-                                                                    <th>HEATH POST IN</th>
+                                                                    <th style="padding:8px;">HEATH POST IN</th>
                                                                     <th class="text-right" ng-repeat="month in by_drugs_reports">{{month.month}}</th>
                                                                     <th class="text-center">COMPARE</th>
                                                                 </tr>
@@ -79,32 +79,34 @@
                                                 <div class="panel-body">
 
                                                     <div class="row">
-                                                        <div class="col-md-3">
-                                                            <div style="width: 100%;
-    text-align: right;
-    padding: 50px;">
-                                                            <button class="btn btn-primary">
-                                                                <i class="fa fa-caret-left" aria-hidden="true"></i>
-                                                            </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
+
+                                                        <div class="col-md-12">
                                                             <div class="panel panel-default monthly_eop">
-                                                                <div class="panel-body">
-                                                                    {{by_drugs_reports[1].total_eop_month}}
-                                                                    <p>{{by_drugs_reports[1].month}}</p>
+
+                                                                <div class="panel-body ">
+                                                                    <div style="float:left;width: 10%;">
+                                                                        <button class="btn btn-primary">
+                                                                            <i class="fa fa-caret-left" aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div style="float:left;width: 80%;font-size: 63px;">
+                                                                        {{by_drugs_reports[1].total_eop_month}}
+                                                                        <p style="font-size:14px;color:#000">{{by_drugs_reports[1].month}}</p>
+
+                                                                    </div>
+                                                                    <div style="float:right;width: 10%;">
+                                                                        <button class="btn btn-primary" disabled>
+                                                                            <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </div>
+
                                                                 </div>
+
+
+
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
-                                                            <div style="width: 100%;
-    text-align: left;
-    padding: 50px;">
-                                                            <button class="btn btn-primary" disabled>
-                                                                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                                                            </button>
-                                                            </div>
-                                                        </div>
+
                                                     </div>
 
 
