@@ -58,7 +58,7 @@
         <section class="vbox">
     <header class="bg-dark dk header navbar navbar-fixed-top-xs">
         <div class="navbar-header aside-md">
-            <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html">
+            <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html" id="toggle_mobile_menu">
 <i class="fa fa-bars"></i>
 </a>
             <a href="#" class="navbar-brand" data-toggle="fullscreen"><img src="assets/images/logo.png" class="m-r-sm" style="min-height: 40px !important;margin-left: 6px;"></a>
@@ -69,6 +69,7 @@
 
 
         <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user" ng-if="user_logged">
+
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 <span class="thumb-sm avatar pull-left">
@@ -100,7 +101,7 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
 
                             <nav class="nav-primary hidden-xs">
                                 <ul class="nav" ng-if="user_logged && !user_logged.is_admin">
-                                    <li>
+                                    <li ng-click="toogle_xmenu()">
                                         <a ui-sref="userregister">
                                             <i class="fa fa-edit icon">
                                                 <b class="bg-info"></b>
@@ -110,7 +111,7 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
                                     </li>
                                 </ul>
                                 <ul class="nav" ng-if="user_logged && user_logged.is_admin">
-                                    <li>
+                                    <li ng-click="toogle_xmenu()">
                                         <a ui-sref="app">
                                         <i class="fa fa-dashboard icon">
                                         <b class="bg-info"></b>
@@ -118,7 +119,7 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
                                         <span>Dashboard</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li ng-click="toogle_xmenu()">
                                         <a ui-sref="messages">
                                         <i class="fa fa-inbox icon">
                                         <b class="bg-info"></b>
@@ -126,7 +127,7 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
                                         <span>Messages</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li ng-click="toogle_xmenu()">
                                         <a ui-sref="reports({f: null})" title="" ng-class="{active: checkactive('reports')}">
                                             <i class="fa fa-users icon">
                                             <b class="bg-success"></b>
@@ -135,7 +136,7 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
                                             </a>
                                     </li>
 
-                                    <li>
+                                    <li ng-click="toogle_xmenu()">
                                         <a ui-sref="healthfacility"  ng-class="{active: checkactive('healthfacility')}">
                                             <i class="fa fa-hospital-o">
                                             <b class="bg-primary"></b>
@@ -143,7 +144,7 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
                                             <span>Health Facility </span>
                                             </a>
                                     </li>
-                                    <li>
+                                    <li ng-click="toogle_xmenu()">
                                         <a ui-sref="drugs"  ng-class="{active: checkactive('drugs')}">
                                             <i class="fa fa-eye-slash">
                                             <b class="bg-danger"></b>
@@ -151,7 +152,7 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
                                             <span>Drugs category</span>
                                             </a>
                                     </li>
-                                    <li>
+                                    <li ng-click="toogle_xmenu()">
                                         <a ui-sref="setting" ng-class="{active: checkactive('setting')}">
                                             <i class="fa fa-cogs">
                                             <b class="bg-warning"></b>
@@ -209,6 +210,12 @@ Hello <strong>{{user_logged.username}}</strong><b class="caret"></b>
             </section>
         </section>
         </section>
+
+
+
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/app.plugin.js"></script>
+
     </body>
 </html>
  

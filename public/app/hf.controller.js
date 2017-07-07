@@ -1,4 +1,5 @@
 angular.module('drugmonApp').controller('HFCtrl', function($scope,$http,toaster,ConfirmBox,ModalControl,$timeout ) {
+
   $scope.list_hf = [];
   $scope.msg = {};
   $scope.list_drug = [];

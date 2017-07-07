@@ -4,6 +4,9 @@
 
 angular.module('drugmonApp').controller('homeCtrl', function($scope,$rootScope,$http,$stateParams,$location,$cookies,$state,ConfirmBox,ModalControl,toaster ) {
 
+    $scope.toogle_xmenu = function(){
+        $('#toggle_mobile_menu').click();
+    }
         $rootScope.user_logged = ($cookies.get('currentUser') ? JSON.parse($cookies.get('currentUser')) : undefined );
 
     $scope.logoutAction = function(){
