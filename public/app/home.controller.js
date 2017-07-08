@@ -154,7 +154,7 @@ angular.module('drugmonApp').controller('SettingCtrl', function($scope,$rootScop
 
 
     $scope.removeAccount = function(user_info){
-        ConfirmBox.confirm('Are you sure?', 'Account '+user_info.username+' will be permanently removed! This action can not undo!').then(function() {
+        ConfirmBox.confirm('Are you sure?', 'Account '+user_info.username+' will be permanently removed! This action cannot be undo!').then(function() {
             $http.delete('/db_delete/accounts/' + user_info._id).then(function (rs) {
                 if (rs.data.status == true) {
                     toaster.pop('success', "Success ", user_info.username+" has been removed!", 5000);
@@ -172,7 +172,61 @@ angular.module('drugmonApp').controller('SettingCtrl', function($scope,$rootScop
 
 });
 
-angular.module('drugmonApp').controller('RegisterDrugCtrl', function($scope,$rootScope,$http,$stateParams,$location) {
+angular.module('drugmonApp').controller('RegisterDrugCtrl', function($scope,$rootScope,$http,ConfirmBox,toaster) {
+    $scope.hf_drugs = [];
+    //Todo: Find drug by HF ID
+    $scope.get_hfdrugs = function(hf_id){
+        var _xdata = {
+            "params": {
+                "$eq":{
+                    "hf_id":hf_id
+                }
+            }
+        }
+        $http.post('/hfdrugs/list', _xdata).then(function(rs){
+            $scope.hf_drugs = rs.data.docs;
+        }, function(){
+            $scope.hf_drugs = [];
+        })
+    }
+
+    if($rootScope.user_logged.user_info && $rootScope.user_logged.user_info.user_hf){
+        $scope.get_hfdrugs($rootScope.user_logged.user_info.user_hf._id);
+    }else{
+
+    }
 
 
+
+    $scope.register_drug = function (drug) {
+        ConfirmBox.confirm('Are you sure?', 'Register drug: "'+drug.drug_name+' ('+drug.drug_code+')" with new ABS: '+drug.drug_abs_new+'?').then(function() {
+            var _xdata = {
+                "data": {
+                    "drug_abs": parseInt(drug.drug_abs_new)
+                }
+            };
+            $http.put('/hfdrugs/'+drug._id, _xdata).then(function(rs){
+                if(rs.data.responseCode == 0){
+                    //Successed, register to history
+                    var drug_data = drug;
+                        drug_data._id = undefined;
+                        drug_data.drug_abs_old = parseInt(drug.drug_abs);
+                        drug_data.drug_abs = parseInt(drug.drug_abs_new);
+
+                    var _update_data = {
+                        "data": drug_data
+                    };
+                    $http.post('/drug_histories', _update_data).then(function(yupdate){
+                        if(yupdate.data.responseCode == 0){
+                            toaster.pop('success', "Register successed! ", drug.drug_name+" have successfully updated!", 5000);
+                            $scope.get_hfdrugs($rootScope.user_logged.user_info.user_hf._id);
+                        }
+                    })
+
+
+
+                }
+            })
+        })
+    }
 })

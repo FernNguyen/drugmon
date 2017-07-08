@@ -20,6 +20,7 @@ angular.module('drugmonApp').controller('AccountCtrl', function($scope,$rootScop
                 var currentUser = {
                     username:rs.data.user_info.username,
                     is_admin:rs.data.user_info.is_admin,
+                    user_info: rs.data.user_info,
                     token:rs.data.token
                 };
 

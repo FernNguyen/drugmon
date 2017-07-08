@@ -68,7 +68,9 @@ app.post('/login', function(req,res){
                 // create a token
                 var res_user = {
                     username: user.username,
-                    is_admin: user.is_admin
+                    is_admin: user.is_admin,
+                    user_hf: user.hf,
+                    user_id: user._id
                 }
                 var token = jwt.sign(res_user, 'drugmonHN@2017', {
                     expiresIn: 1440 // expires in 24 hours
