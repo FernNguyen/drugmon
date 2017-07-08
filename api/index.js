@@ -76,6 +76,10 @@ app.use('/api/app', function(req, res) {
                         _drug_histories._id = undefined;
                         _drug_histories.drug_abs_old = _druginfo.drug_abs;
                         _drug_histories.drug_abs = _request_qty;
+                        _drug_histories.update_type = "sms_register";
+                        _drug_histories.user_update = {
+                            username:eachDB.from
+                        };
                         _drug_histories.createdAt = new Date();
                         _drug_histories.updatedAt = new Date();
 
