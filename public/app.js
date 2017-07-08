@@ -1,8 +1,11 @@
 'use strict';
 
 angular.module('drugmonApp', [
-  'ui.router','ngSanitize','ngCookies','ui.select','toaster','ngDialog','googlechart','angular-sha1'
-]).config(function($stateProvider, $urlRouterProvider,$locationProvider) {
+  'ui.router','ngSanitize','ngCookies','angular-storage','ui.select','toaster','ngDialog','googlechart','angular-sha1'
+]).config(function ($httpProvider) {
+    $httpProvider.defaults.withCredentials = false;
+    //rest of route code
+}).config(function($stateProvider, $urlRouterProvider,$locationProvider) {
 
 
     $stateProvider.state('app', {
@@ -47,9 +50,9 @@ angular.module('drugmonApp', [
     });
 
 
-}).run(function ($rootScope, $http, $location, $cookies,$state) {
+}).run(function ($rootScope, $http, $location, $cookies,$state, store) {
     // keep user logged in after page refresh
-    var user_logged = ($cookies.get('currentUser') ? JSON.parse($cookies.get('currentUser')) : {});
+    var user_logged = (store.get('currentUser') ? store.get('currentUser') : {});
     $rootScope.user_logged = user_logged;
     if (user_logged) {
         $http.defaults.headers.common['Authorization'] = 'Bearer ' + user_logged.token;
@@ -59,7 +62,7 @@ angular.module('drugmonApp', [
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
         var publicPages = ['/login.html'];
         var restrictedPage = publicPages.indexOf($location.path()) === -1;
-        if (restrictedPage && !$cookies.get('currentUser')) {
+        if (restrictedPage && !store.get('currentUser')) {
             $state.go('login');
             $location.path('/login.html');
             return;

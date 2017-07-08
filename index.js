@@ -58,7 +58,6 @@ app.post('/login', function(req,res){
         if (!user) {
             res.json({ status: false, message: 'Authentication failed. User not found.' });
         } else if (user) {
-            console.log(user);
             // check if password matches
             if (user.password != sha1(req.body.password)) {
                 res.json({ status: false, message: 'Authentication failed. Wrong password.' });

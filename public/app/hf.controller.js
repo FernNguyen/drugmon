@@ -1,10 +1,11 @@
-angular.module('drugmonApp').controller('HFCtrl', function($scope,$http,toaster,ConfirmBox,ModalControl,$timeout ) {
+angular.module('drugmonApp').controller('HFCtrl', function($rootScope,$scope,$http,toaster,ConfirmBox,ModalControl,$timeout ) {
 
   $scope.list_hf = [];
   $scope.msg = {};
   $scope.list_drug = [];
   $scope.hf_drugs = [];
   $scope.newdrug = {};
+  $scope.drug_histories = {};
 
 
   $scope.findHFbyFilter = function(filter){
@@ -37,6 +38,29 @@ $scope.get_hfdetail = function(){
 //Todo: Preload
 $scope.get_hfdetail();
 
+    $scope.get_drug_history = function(drug_id,hf_id){
+        var x_req = {
+            "params": {"$eq": {
+                drug_id: drug_id,
+                hf_id: hf_id
+            },
+                "$sort": [
+                    "-createdAt"
+                ],}
+        }
+        $http.post('/drug_histories/list', x_req).then(function(rs){
+            if(rs.data.responseCode == 0){
+                //okay
+                if(rs.data.docs.length>0){
+                    $scope.drug_histories[drug_id] = [];
+                    $scope.drug_histories[drug_id] = rs.data.docs;
+                }else{
+                    toaster.pop('info', "Infomation! ", "No data return!", 5000);
+
+                }
+            }
+        })
+    }
 
 //Todo: Selected HF detail
 $scope.hf_selected = undefined;

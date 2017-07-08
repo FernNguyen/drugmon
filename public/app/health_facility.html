@@ -166,11 +166,13 @@
                                                                         <td class="h5 text-primary" style="width:8%">
                                                                             <input type="text" class="form-control input-sm" ng-model="newdrug.drug_abs">
                                                                         </td>
-                                                                        <td class="h5 text-danger" style="width:8%">
+                                                                        <td class="h5 text-danger" style="width:12%" >
                                                                             <button class="btn btn-primary input-sm" ng-click="add_hfdrug(newdrug)"><i class="fa fa-arrow-down"></i> Add</button>
                                                                         </td>
                                                                     </tr>
-                                                                    <tr ng-repeat="(drung_order,drug) in hf_drugs">
+                                                                    </tbody>
+                                                                    <tbody ng-repeat="(drung_order,drug) in hf_drugs">
+                                                                    <tr>
                                                                         <td>{{drung_order+1}}</td>
                                                                         <td>{{drug.drug_code}}</td>
                                                                         <td>{{drug.drug_name}}</td>
@@ -180,6 +182,62 @@
                                                                         <td class="h5 text-danger">
                                                                             <!--<a href="#" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i> Edit</a>-->
                                                                             <a ng-click="remove_drug(drug)" class="btn btn-xs btn-danger"><i class="fa fa-times"></i> Remove</a>
+                                                                            <a ng-click="get_drug_history(drug.drug_id,hf_selected._id)" class="btn btn-xs btn-default"><i class="fa fa-arrow-circle-down"></i> History</a>
+
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr ng-if="drug_histories[drug.drug_id].length >0">
+                                                                        <td colspan="8">
+                                                                            <div class="panel panel-default">
+                                                                                <div class="panel-heading">
+                                                                                    <i class="fa fa-address-book" aria-hidden="true"></i>
+                                                                                    {{drug.drug_name}} request history
+                                                                                    <span class="pull-right">
+                                           <button class="btn btn-default text-success btn-xs" style="margin-top:-8px;" ng-click="get_drug_history(drug.drug_id,hf_selected._id)">
+                                           Refresh history <i class="fa fa-refresh"></i></button>
+                                             <button class="btn btn-danger text-success btn-xs" style="margin-top:-8px;" ng-click="drug_histories[drug.drug_id] = {}">
+                                           Close <i class="fa fa-times" ></i></button>
+                                        </span>
+                                                                                </div>
+                                                                                <div class="panel-body table-responsive">
+
+                                                                                    <table class="table table-sm ">
+                                                                                        <thead>
+                                                                                        <tr>
+                                                                                            <th>#</th>
+                                                                                            <th>Date/Time</th>
+                                                                                            <th class="text-center">Qty old</th>
+                                                                                            <th class="text-center">Qty new</th>
+                                                                                            <th class="text-center">Change</th>
+                                                                                            <th class="text-center">Type</th>
+                                                                                            <th class="text-center">User/Mobile</th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr ng-repeat="(aIndex,history) in drug_histories[drug.drug_id]">
+                                                                                            <th scope="row">{{aIndex+1}}</th>
+                                                                                            <td>{{history.createdAt | date:"medium"}}</td>
+                                                                                            <td class="text-center">{{history.drug_abs_old}}</td>
+                                                                                            <td class="text-center">{{history.drug_abs}}</td>
+                                                                                            <td class="text-center">{{history.drug_abs-history.drug_abs_old}}
+
+                                                                                                <i class="fa fa-arrow-up" aria-hidden="true" ng-if="history.drug_abs-history.drug_abs_old>=1" style="color:green;float:right"></i>
+                                                                                                <i class="fa fa-arrow-down" aria-hidden="true" ng-if="history.drug_abs-history.drug_abs_old <0 " style="color:red;float:right"></i>
+
+
+                                                                                            </td>
+                                                                                            <td class="text-center">
+                                                                                                <span class="badge badge-success" ng-if="history.update_type == 'web_register'">{{history.update_type}}</span>
+                                                                                                <span class="badge badge-success" style="background-color:#e29595" ng-if="history.update_type == 'sms_register'">{{history.update_type}}</span>
+                                                                                            </td>
+                                                                                            <td class="text-center">{{history.user_update.username}}</td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>

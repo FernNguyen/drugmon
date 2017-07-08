@@ -2,16 +2,16 @@
  * Created by Linhnv on 12-Jun-17.
  */
 
-angular.module('drugmonApp').controller('homeCtrl', function($scope,$rootScope,$http,$stateParams,$location,$cookies,$state,ConfirmBox,ModalControl,toaster ) {
+angular.module('drugmonApp').controller('homeCtrl', function($scope,$rootScope,$http,$stateParams,$location,$cookies,$state,ConfirmBox,ModalControl,toaster,store ) {
 
     $scope.toogle_xmenu = function(){
         $('#toggle_mobile_menu').click();
     }
-        $rootScope.user_logged = ($cookies.get('currentUser') ? JSON.parse($cookies.get('currentUser')) : undefined );
+        $rootScope.user_logged = (store.get('currentUser') ? store.get('currentUser') : undefined );
 
     $scope.logoutAction = function(){
         ConfirmBox.confirm('Confirm', 'Are you sure you want to logout?').then(function() {
-            $cookies.remove('currentUser');
+            store.remove('currentUser');
             $rootScope.user_logged = undefined;
             $state.go('login');
         })
@@ -174,12 +174,14 @@ angular.module('drugmonApp').controller('SettingCtrl', function($scope,$rootScop
 
 angular.module('drugmonApp').controller('RegisterDrugCtrl', function($scope,$rootScope,$http,ConfirmBox,toaster) {
     $scope.hf_drugs = [];
+    $scope.drug_histories = {};
     //Todo: Find drug by HF ID
-    $scope.get_hfdrugs = function(hf_id){
+    $scope.get_hfdrugs = function(){
+        $scope.hf_drugs = [];
         var _xdata = {
             "params": {
                 "$eq":{
-                    "hf_id":hf_id
+                    "hf_id":$rootScope.user_logged.user_info.user_hf._id
                 }
             }
         }
@@ -191,14 +193,36 @@ angular.module('drugmonApp').controller('RegisterDrugCtrl', function($scope,$roo
     }
 
     if($rootScope.user_logged.user_info && $rootScope.user_logged.user_info.user_hf){
-        $scope.get_hfdrugs($rootScope.user_logged.user_info.user_hf._id);
-    }else{
-
+        $scope.get_hfdrugs();
     }
 
 
+    $scope.get_drug_history = function(drug_id){
+        var x_req = {
+            "params": {"$eq": {
+                drug_id: drug_id,
+                hf_id: $rootScope.user_logged.user_info.user_hf._id
+            },
+                "$sort": [
+                    "-createdAt"
+                ],}
+        }
+        $http.post('/drug_histories/list', x_req).then(function(rs){
+            if(rs.data.responseCode == 0){
+                //okay
+                if(rs.data.docs.length>0){
+                    $scope.drug_histories[drug_id] = rs.data.docs;
+                }else{
+                toaster.pop('info', "Infomation! ", "No data return!", 5000);
+
+                }
+            }
+        })
+    }
 
     $scope.register_drug = function (drug) {
+        if(drug.drug_abs_new){
+
         ConfirmBox.confirm('Are you sure?', 'Register drug: "'+drug.drug_name+' ('+drug.drug_code+')" with new ABS: '+drug.drug_abs_new+'?').then(function() {
             var _xdata = {
                 "data": {
@@ -210,8 +234,12 @@ angular.module('drugmonApp').controller('RegisterDrugCtrl', function($scope,$roo
                     //Successed, register to history
                     var drug_data = drug;
                         drug_data._id = undefined;
+                        drug_data.updatedAt = undefined;
+                        drug_data.createdAt = undefined;
                         drug_data.drug_abs_old = parseInt(drug.drug_abs);
                         drug_data.drug_abs = parseInt(drug.drug_abs_new);
+                        drug_data.user_update = $rootScope.user_logged.user_info;
+                        drug_data.update_type = 'web_register';
 
                     var _update_data = {
                         "data": drug_data
@@ -220,6 +248,7 @@ angular.module('drugmonApp').controller('RegisterDrugCtrl', function($scope,$roo
                         if(yupdate.data.responseCode == 0){
                             toaster.pop('success', "Register successed! ", drug.drug_name+" have successfully updated!", 5000);
                             $scope.get_hfdrugs($rootScope.user_logged.user_info.user_hf._id);
+                            $scope.get_drug_history(drug._id);
                         }
                     })
 
@@ -228,5 +257,9 @@ angular.module('drugmonApp').controller('RegisterDrugCtrl', function($scope,$roo
                 }
             })
         })
+
+    }else{
+        toaster.pop('error', "Error", "Please enter number of new ABS!", 5000);
+    }
     }
 })

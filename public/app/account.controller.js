@@ -2,7 +2,7 @@
  * Created by Linhnv on 12-Jun-17.
  */
 
-angular.module('drugmonApp').controller('AccountCtrl', function($scope,$rootScope,$http,$location,toaster,$cookies,$state) {
+angular.module('drugmonApp').controller('AccountCtrl', function($scope,$rootScope,$http,$location,toaster,$cookies,$state, store) {
 
 
     $scope.login = {};
@@ -24,7 +24,9 @@ angular.module('drugmonApp').controller('AccountCtrl', function($scope,$rootScop
                     token:rs.data.token
                 };
 
-                $cookies.putObject('currentUser',currentUser);
+                store.set('currentUser',currentUser);
+
+                // $cookies.putObject('currentUser',currentUser);
                 $rootScope.user_logged = currentUser;
 
                 if(currentUser.is_admin){
