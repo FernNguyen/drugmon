@@ -128,30 +128,75 @@
 
                                             </div>
                                             <div class="panel panel-primary">
-                                                <div class="panel-heading" style="text-align: center;"><strong>MONTHLY EOP</strong></div>
+                                                <div class="panel-heading"><strong>Total Drugs Usage/Consumption </strong></div>
                                                 <div class="panel-body">
 
                                                     <div class="row">
 
                                                         <div class="col-md-12">
-                                                            <div class="panel panel-default monthly_eop">
+                                                            <div class="panel panel-default ">
 
                                                                 <div class="panel-body ">
-                                                                    <div style="float:left;width: 10%;">
-                                                                        <button class="btn btn-primary">
-                                                                            <i class="fa fa-caret-left" aria-hidden="true"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div style="float:left;width: 80%;font-size: 63px;">
-                                                                        {{by_drugs_reports[1].total_eop_month}}
-                                                                        <p style="font-size:14px;color:#000">{{by_drugs_reports[1].month}}</p>
+                                                                    <div class="row" style="margin-bottom:15px;">
+                                                                        <div class="col-md-3">
+                                                                            Filter by HF:
+                                                                            <select ng-model="usage_slt_hf" class="form-control input-sm" ng-change="select_usage_hf()">
+                                                                                <option value="0" ng-selected="0" selected>All </option>
+                                                                                <option ng-repeat="hf in list_hf" value="{{hf._id}}">{{hf.name}}</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            Filter by Drug:
+                                                                            <select ng-model="usage_slt_drug" class="form-control input-sm" ng-change="select_usage_hf()">
+                                                                                <option value="0" ng-selected="0" selected>All Drugs</option>
+                                                                                <option ng-repeat="drug in list_drug" value="{{drug.drug_code}}">{{drug.drug_name}}</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            From Month:
+                                                                            <select ng-model="slt_drug" class="form-control input-sm" ng-change="change_slt_drug()">
+                                                                                <option value="0" ng-selected="0" selected>All </option>
+                                                                                <option ng-repeat="month in list_month" value="{{month.month_id}}">{{month.month_name}}</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            To Month:
+                                                                            <select ng-model="slt_drug" class="form-control input-sm" ng-change="change_slt_drug()">
+                                                                                <option value="0" ng-selected="0" selected>All </option>
+                                                                                <option ng-repeat="month in list_month" value="{{month.month_id}}">{{month.month_name}}</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="pull-right" style="margin-right:5px;">
+                                                                            <button class="btn btn-sm btn-primary" ng-click="exportData()">
+                                                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                                                Export in Excel
+                                                                            </button>
+                                                                        </div>
 
                                                                     </div>
-                                                                    <div style="float:right;width: 10%;">
-                                                                        <button class="btn btn-primary" disabled>
-                                                                            <i class="fa fa-caret-right" aria-hidden="true"></i>
-                                                                        </button>
-                                                                    </div>
+                                                                    <table class="table table-sm ">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>#</th>
+
+                                                                            <th>
+                                                                                <a href="#" ng-click="set_orderBy('drug_name')">
+                                                                                    Drug Name
+                                                                                    <i class="fa fa-sort" aria-hidden="true"></i></a>
+                                                                            </th>
+                                                                            <th class="text-center">Stock</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr ng-repeat="(aIndex,data) in usage_summary">
+                                                                            <th scope="row">{{aIndex+1}}</th>
+                                                                            <td>{{data.drug_name}}</td>
+                                                                            <td class="text-center">
+                                                                                {{data.drug_total}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
 
                                                                 </div>
 

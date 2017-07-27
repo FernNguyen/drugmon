@@ -205,8 +205,6 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
                             })
                         }else{
                             //Select drug
-                            console.log('selected drug',data_col_chart[idx]);
-
                             data_col_chart[idx].forEach(function(ecol){
                                 if(by_drug != 0 && ecol.code == by_drug){
                                     if(is_get_header != true){
@@ -224,7 +222,6 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
 
                     collect_data_chart.push(month_prefix.concat(first_row));
                     $scope.data_col_chart = collect_data_chart.concat(row_arr);
-                    console.log($scope.data_col_chart);
                 }
 
 
@@ -435,6 +432,7 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
                     var xdata = $scope.sort_by_month[index][month_idx][loop_hf].data;
                     //generate
 
+
                     var tmp_drug_group = {};
                     xdata.forEach(function(rs){
                         if(!tmp_drug_group[rs.drug_code]){
@@ -469,8 +467,45 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
         })
 
         $scope.dataOverView = okdata;
-        console.log($scope.dataOverView);
     }
+
+
+    //3th
+    $scope.usage_slt_hf = 0;
+    $scope.usage_slt_drug = 0;
+    $scope.usage_summary = [];
+    $scope.select_usage_hf = function(){
+
+        var data_to_show = angular.copy($scope.dataOverView);
+
+
+        if($scope.usage_slt_hf != 0){
+            data_to_show = data_to_show.filter(function(rs){ return rs.hf_id == $scope.usage_slt_hf})
+        }
+        if($scope.usage_slt_drug != 0){
+            data_to_show = data_to_show.filter(function(rs){ return rs.drug_code == $scope.usage_slt_drug})
+        }
+
+
+        var xusage = _.groupBy(data_to_show, function(b) { return b.drug_code});
+        var x_drugTotal = [];
+        for(var xu in xusage){
+            var obj_drug = {
+                drug_code: xu,
+                drug_name: xu,
+                drug_total:0
+            }
+            xusage[xu].forEach(function (rs) {
+                obj_drug.drug_total = obj_drug.drug_total+rs.total_asl
+            })
+
+            x_drugTotal.push(obj_drug);
+        }
+        $scope.usage_summary = x_drugTotal;
+
+    }
+
+
 
 
 });
