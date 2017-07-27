@@ -24,12 +24,7 @@ const SMSCheck = require('./utils.js');
 
 var mongoDB = 'mongodb://127.0.0.1/drugmon';
 mongoose.connect(mongoDB);
-var Schema = mongoose.Schema;
 
-var User = new Schema ({
-    username : String,
-    password : String
-});
 
 //Get the default connection
 var db = mongoose.connection;
@@ -44,6 +39,9 @@ app.use(express.static(__dirname + '/public'));
 app.get('/*.html', function(req, res){
     res.sendFile(__dirname + '/public/index.html');
 });
+
+
+
 //
 // app.get('/', function(req, res){
 //     console.log('GETTTT');

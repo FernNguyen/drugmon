@@ -17,7 +17,7 @@
                                     <div class="row">
                                         <div id="custom-search-input">
                                             <div class="input-group col-md-12">
-                                                <input type="text" class="  search-query form-control" placeholder="Find HF/VDC" />
+                                                <input type="text" class="  search-query form-control" placeholder="Find HF/VDC"  ng-model="hfFilter"/>
                                                 <button class="btn btn-danger" type="button">
                                                     <span class=" glyphicon glyphicon-search"></span>
                                                 </button>
@@ -26,7 +26,7 @@
 
                                         <div class="member_list">
                                             <ul class="list-unstyled">
-                                                <li class="left clearfix" ng-repeat="(pindex,hf) in list_hf" ng-click="choose_hf(hf)" ng-class="{'active_li': hf_selected._id == hf._id}">
+                                                <li class="left clearfix" ng-repeat="(pindex,hf) in list_hf | filter:hfFilter" ng-click="choose_hf(hf)" ng-class="{'active_li': hf_selected._id == hf._id}">
 
                                                     <div class="chat-body clearfix" style="margin-left:3px;">
                                                         <div class="header_sec ">

@@ -1,4 +1,4 @@
-angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter) {
+angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter,$timeout) {
 
     $scope.monthly_reporting_ratio = {};
     $scope.total_number = {};
@@ -18,7 +18,24 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
 
         }, function(){
             console.log('Error!');
+        });
+
+        $http.post('/healthfacility/list', {}).then(function(rs){
+            $scope.list_hf = rs.data.docs;
+        }, function(){
+            console.log('Error!');
+        });
+
+
+        // //Todo: Get drugs
+        $http.post('/drugs/list', {}).then(function(rs){
+            $scope.list_drug = [];
+            $scope.list_drug = rs.data.docs;
+        }, function(){
+            console.log('Error!');
         })
+
+
     }
 
     $scope.get_data_reports = function(){
@@ -94,8 +111,6 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
                 by_drugs[e_month].total_eop_month = _total_eop_month;
             }
 
-
-
         })
 
         //
@@ -126,8 +141,6 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
             }
         ];
 
-        console.log($scope.by_drugs_reports);
-
     }
 
     $scope.get_data_reports();
@@ -139,22 +152,85 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
     }
 
 
-    $scope.data_col_chart = [];
-    function get_data_chart(obj){
-        //$scope.data_col_chart = [];
+    $scope.data_col_chart = {};
+    function get_data_chart(obj,by_drug){
+        $scope.data_col_chart = {};
+        var data_col_chart = [];
         for(var index in obj) {
             //Loop Year
+            var data_charts = {};
             for(var month_idx in obj[index]){
-                console.log(month_idx);
                 //Loop Month
-                var _tmp_obj =
-                    {c: [
-                        {v: str_pad(month_idx) + '/' + index},
-                        {v: Object.keys(obj[index][month_idx]).length}
-                    ]}
-                $scope.data_col_chart.push(_tmp_obj);}
+                //Check if selected HF
+                if($scope.slt_hf && obj[index][month_idx][$scope.slt_hf] && obj[index][month_idx][$scope.slt_hf].data){
+                    var hist = {};
+                    obj[index][month_idx][$scope.slt_hf].data.map( function (a) { if (a.drug_code in hist) hist[a.drug_code] = hist[a.drug_code]+parseInt(a.drug_abs); else hist[a.drug_code] = parseInt(a.drug_abs); } );
+
+                    var list_month = [];
+
+                    for(var abx in $scope.list_drug){
+                       // list_month.push([$scope.list_drug[abx].drug_name,{role: "annotation"}]);
+                        if(hist[$scope.list_drug[abx].drug_code]){
+                            list_month.push({
+                                code:$scope.list_drug[abx].drug_code,
+                                total:hist[$scope.list_drug[abx].drug_code]
+                            })
+                        }else{
+                            list_month.push({
+                                code:$scope.list_drug[abx].drug_code,
+                                total:0
+                            })
+                        }
+                    }
+                    data_charts[month_idx] = list_month;
+                    data_col_chart = data_charts;
+
+                    var collect_data_chart = [];
+                    var first_row = [],
+                        is_get_header = false,
+                        month_prefix = ["Month"];
+                    var row_arr = [];
+
+                    for(var idx in data_col_chart){
+                        var col_header = [str_pad(idx) + '/2017'];
+                        var col_arr = [];
+
+                        if(by_drug == 0 || by_drug == undefined){
+                            data_col_chart[idx].forEach(function(ecol){
+                                    if(is_get_header != true){
+                                        first_row.push(ecol.code,{role: "annotation"});
+                                    }
+                                    col_arr.push(ecol.total);
+                                    col_arr.push(ecol.total);
+                            })
+                        }else{
+                            //Select drug
+                            console.log('selected drug',data_col_chart[idx]);
+
+                            data_col_chart[idx].forEach(function(ecol){
+                                if(by_drug != 0 && ecol.code == by_drug){
+                                    if(is_get_header != true){
+                                        first_row = [ecol.code,{role: "annotation"}];
+                                    }
+                                    col_arr.push(ecol.total);
+                                    col_arr.push(ecol.total);
+                                }
+                            })
+                        }
+
+                        is_get_header = true;
+                        row_arr.push(col_header.concat(col_arr));
+                    }
+
+                    collect_data_chart.push(month_prefix.concat(first_row));
+                    $scope.data_col_chart = collect_data_chart.concat(row_arr);
+                    console.log($scope.data_col_chart);
+                }
+
+
+                //$scope.data_col_chart.push(_tmp_obj);
+            }
         }
-        console.log($scope.data_col_chart);
     }
 
     $scope.monthly_reporting_ratio.type = "ColumnChart";
@@ -182,8 +258,219 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
     $scope.monthly_reporting_ratio.options = {
         'title': '',
         'isStacked':'normal',
-        "displayExactValues": true,
+        "displayExactValues": true
     };
+
+    var sample = [
+        ["Month",'CHX',{role: "annotation"}, 'MSO',{role: "annotation"}, 'OXI',{role: "annotation"}],
+        ['05/2017', 30,30, 103,103, 37, 37],
+        ['06/2017', 60,60, 45,45, 322, 322],
+        ['07/2017', 20,20, 300,300, 20, 20]
+    ];
+
+
+    $scope.slt_hf = '';
+    $scope.slt_drug = '0';
+    $scope.draw_now = false;
+    $scope.change_slt_hf = function(){
+        $scope.slt_drug = '0';
+        get_data_chart($scope.sort_by_month);
+        $scope.myChartObject = {
+            "type": "ColumnChart",
+            "displayed": false,
+            "data": $scope.data_col_chart,
+            "options": {
+                "title": "",
+                "isStacked": "false",
+                "displayExactValues": true,
+                "displayAnnotations": true,
+                annotations: {
+                    textStyle: {
+                        fontSize: 13,
+                    },
+                    alwaysOutside: true
+                },
+
+                "vAxis": {
+                    "title": "Numbers",
+                },
+                "hAxis": {
+                    "title": "Date"
+                },
+                "colorAxis": {"colors": ['#868686', '#C0504D','#9BBB59']},
+
+                "seriesType": "bars",
+                "series": {5: {"type": "line","role":"annotation"}},
+            }
+        }
+
+        $scope.draw_now = true;
+
+    }
+
+    $scope.change_slt_drug = function () {
+        get_data_chart($scope.sort_by_month,$scope.slt_drug);
+        $scope.myChartObject = {
+            "type": "ColumnChart",
+            "displayed": false,
+            "data": $scope.data_col_chart,
+            "options": {
+                "title": "",
+                "isStacked": "false",
+                "displayExactValues": true,
+                "displayAnnotations": true,
+                annotations: {
+                    textStyle: {
+                        fontSize: 13,
+                    },
+                    alwaysOutside: true
+                },
+
+                "vAxis": {
+                    "title": "Numbers",
+                },
+                "hAxis": {
+                    "title": "Date"
+                },
+                "colorAxis": {"colors": ['#868686', '#C0504D','#9BBB59']},
+
+                "seriesType": "bars",
+                "series": {5: {"type": "line","role":"annotation"}},
+            }
+        }
+
+        $scope.draw_now = true;
+
+    }
+
+    $scope.errorHandler = function(){
+        $scope.myChartObject = {};
+        $scope.draw_now = false;
+    }
+
+
+    ///
+
+    $scope.list_month = [];
+    $scope.filterByMonth = function(){
+        var _current_date = new Date();
+        var _current_month = _current_date.getMonth()+1;
+        var months = moment.monthsShort();
+        $scope.list_months = months.slice(0,_current_month);
+        $scope.list_month = $scope.list_months.map(function(rs,idx){
+            return {
+                month_id:idx+1,
+                month_name: rs + ', '+_current_date.getFullYear()
+            };
+        })
+    }
+
+    $scope.filterByMonth();
+
+
+    $scope.overview_slt_hf = '';
+    $scope.overview_slt_month = '0';
+    $scope.dataFilter = {};
+    $scope.dataSort = {};
+    $scope.change_slt_overview = function () {
+        if($scope.overview_slt_hf != 0){
+            $scope.dataFilter.hf_id = $scope.overview_slt_hf;
+        }else{
+            $scope.dataFilter.hf_id = undefined;
+        }
+    }
+    $scope.change_slt_month = function () {
+        if($scope.overview_slt_month != 0){
+            $scope.dataFilter.month = $scope.overview_slt_month;
+        }else{
+            $scope.dataFilter.month = undefined;
+        }
+    }
+
+    $scope.set_orderBy = function(type){
+        $scope.dataSort = type;
+    }
+
+
+    //Export overview D
+    $scope.exportData = function () {
+        var template_import = [];
+        $scope.dataOverView.forEach(function(each,indx){
+            var x_each_line = {
+                "#"           : indx+1,
+                "HF_NAME"     : each.hf_name,
+                "DRUG_NAME"   : each.drug_name,
+                "ASL"         : each.total_asl,
+                "EOP"         : each.total_eop,
+                "STOCK"       : each.total_abs,
+                "MONTH"       : each.month,
+                "STATUS"      : '-'
+            };
+            template_import.push(x_each_line);
+        });
+
+        alasql('SELECT * INTO XLSX("DRUGMON_DataExport.xlsx",{headers:true}) FROM ?',[template_import]);
+
+    };
+
+
+    $scope.init_load_data = function(){
+        $timeout(function(){
+            $scope.general_overview_data();
+        },1000)
+    }
+
+    //General data
+    $scope.general_overview_data = function(){
+
+        var group_byHF = [];
+        for(var index in $scope.sort_by_month) {
+            //Loop Year
+            var data_charts = {};
+            for(var month_idx in $scope.sort_by_month[index]){
+                //Loop Month
+
+                for(var loop_hf in $scope.sort_by_month[index][month_idx]){
+
+                    var xdata = $scope.sort_by_month[index][month_idx][loop_hf].data;
+                    //generate
+
+                    var tmp_drug_group = {};
+                    xdata.forEach(function(rs){
+                        if(!tmp_drug_group[rs.drug_code]){
+                            tmp_drug_group[rs.drug_code] = {
+                                total_asl: parseInt(rs.drug_asl),
+                                total_eop: parseInt(rs.drug_eop),
+                                total_abs: parseInt(rs.drug_abs),
+                                hf_name: rs.hf_detail.name,
+                                month : month_idx,
+                                hf_id:loop_hf,
+                                drug_name: rs.drug_name,
+                                drug_code: rs.drug_code
+                            }
+                        }else{
+                            tmp_drug_group[rs.drug_code].total_asl = tmp_drug_group[rs.drug_code].total_asl + parseInt(rs.drug_asl);
+                            tmp_drug_group[rs.drug_code].total_eop = tmp_drug_group[rs.drug_code].total_eop + parseInt(rs.drug_eop);
+                            tmp_drug_group[rs.drug_code].total_abs = tmp_drug_group[rs.drug_code].total_abs + parseInt(rs.drug_abs);
+                        }
+                    })
+
+
+                    group_byHF.push(tmp_drug_group);
+
+                }
+            }
+        }
+        var okdata = [];
+        group_byHF.forEach(function (exs) {
+            for(var code in exs){
+                okdata.push(exs[code]);
+            }
+        })
+
+        $scope.dataOverView = okdata;
+        console.log($scope.dataOverView);
+    }
 
 
 });

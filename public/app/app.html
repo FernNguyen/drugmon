@@ -16,63 +16,116 @@
                                         <div class="container" style="width:100%;padding-left:0px;">
 
                                             <div class="panel panel-primary">
-                                                <div class="panel-heading" style="text-align: center;"><strong>MONTHLY REPORTING RATIO</strong>
+                                                <div class="panel-heading" style="text-align: center;">
+                                                    <strong>MONTHLY STOCK REPORT</strong>
 
-                                                    <!--<span class="pull-right" style=" margin-top: -5px;"><button type="button" class="btn btn-sm btn-danger" ng-click="get_data_reports()"><i class="fa fa-refresh"></i> Refresh</button> </span>-->
+                                                    <span class="pull-right" style=" margin-top: -5px;"><button type="button" class="btn btn-sm btn-danger" ng-click="get_data_reports()"><i class="fa fa-refresh"></i> Refresh</button> </span>
                                                 </div>
                                                 <div class="panel-body">
-                                                    <div google-chart chart="monthly_reporting_ratio"></div>
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                        Filter by HF:
+                                                        <select ng-model="slt_hf" class="form-control input-sm" ng-change="change_slt_hf()">
+                                                            <option ng-repeat="hf in list_hf" value="{{hf._id}}">{{hf.name}}</option>
+                                                        </select>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            Filter by Drug:
+                                                        <select ng-model="slt_drug" class="form-control input-sm" ng-disabled="!slt_hf" ng-change="change_slt_drug()">
+                                                            <option value="0" ng-selected="0" selected>All Drugs</option>
+                                                            <option ng-repeat="drug in list_drug" value="{{drug.drug_code}}">{{drug.drug_name}}</option>
+                                                        </select>
+                                                        </div>
+
+                                                    </div>
+                                                    <div google-chart chart="myChartObject" ng-if="draw_now" agc-on-error="errorHandler(message)"></div>
+                                                    <div  ng-if="!draw_now" style="height: 210px;width: 100%;text-align: center;justify-content: center;display: flex;align-items: center;font-size: 16px;">
+                                                        Not enough data to draw charts, please select another!
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-md-8">
+                                            <div class="row" ng-init="init_load_data()">
+                                                <div class="col-md-12">
                                                     <div class="panel panel-danger">
-                                                        <div class="panel-heading"><strong>LAST MONTH'S STOCK SITUATION</strong>
-                                                        <span class="pull-right">Month:
-
-                                                            <select ng-model="drug_selected" >
-                                                                <option ng-repeat="drug in drugs" value="{{drug.drug_code}}">{{drug.drug_name}} ({{drug.drug_code}})</option>
-                                                            </select>
-
-                                                            <button ng-click="monthly_rp_by_drug(drug_selected)" class="btn btn-xs btn-danger">OK</button>
-                                                        </span>
+                                                        <div class="panel-heading"><strong>Overview of Drugs </strong>
                                                         </div>
-                                                        <div class="panel-body report" style="height: 230px">
-                                                            <table class="table ">
+                                                        <div class="panel-body report" style="">
+                                                            <div class="row" style="margin-bottom:15px;">
+                                                                <div class="col-md-3">
+                                                                    Filter by HF:
+                                                                    <select ng-model="overview_slt_hf" class="form-control input-sm" ng-change="change_slt_overview()">
+                                                                        <option value="0" ng-selected="0" selected>All </option>
+                                                                        <option ng-repeat="hf in list_hf" value="{{hf._id}}">{{hf.name}}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    Filter by Month:
+                                                                    <select ng-model="overview_slt_month" class="form-control input-sm" ng-change="change_slt_month()">
+                                                                        <option value="0" ng-selected="0" selected>All </option>
+                                                                        <option ng-repeat="month in list_month" value="{{month.month_id}}">{{month.month_name}}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="pull-right" style="margin-right:5px;">
+                                                                    <button class="btn btn-sm btn-primary" ng-click="exportData()">
+                                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                                         Export in Excel
+                                                                    </button>
+                                                                </div>
+
+                                                            </div>
+                                                            <table class="table table-sm ">
                                                                 <thead>
                                                                 <tr>
-                                                                    <th style="padding:8px;">HEATH POST IN</th>
-                                                                    <th class="text-right" ng-repeat="month in by_drugs_reports">{{month.month}}</th>
-                                                                    <th class="text-center">COMPARE</th>
+                                                                    <th>#</th>
+                                                                    <th>
+
+
+                                                                        <a href="#" ng-click="set_orderBy('hf_name')">
+                                                                            Name of HF
+                                                                            <i class="fa fa-sort" aria-hidden="true"></i></a>
+
+                                                                    </th>
+                                                                    <th>
+                                                                        <a href="#" ng-click="set_orderBy('drug_name')">
+                                                                            Drug Name
+                                                                         <i class="fa fa-sort" aria-hidden="true"></i></a>
+                                                                    </th>
+                                                                    <th class="text-center">ASL</th>
+                                                                    <th class="text-center">EOP</th>
+                                                                    <th class="text-center">Stock</th>
+                                                                    <th class="text-center">
+                                                                        <a href="#" ng-click="set_orderBy('month')">
+                                                                        Month
+                                                                        <i class="fa fa-sort" aria-hidden="true"></i></a>
+                                                                    </th>
+                                                                    <th class="text-center">Status Signal</th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                <tr class="table-warning"  ng-repeat="status in by_drugs_reports">
-                                                                    <th scope="row" style="padding: 21px;">{{status.name}}</th>
-                                                                    <td class="text-right" style="vertical-align: inherit">{{status.percent_lastmonth}}%</td>
-                                                                    <td class="text-right" style="vertical-align: inherit">{{status.percent_current}}%</td>
-                                                                    <td class="text-center" style="vertical-align: inherit">
-                                                                        <i class="fa fa-arrow-up" style="color:green;" ng-if="status.status == 'up'"></i>
-                                                                        <i class="fa fa-arrow-down" style="color:red;" ng-if="status.status == 'down'"></i>
-                                                                        <i class="fa fa-arrows-h" ng-if="status.status == '-'"></i>
+                                                                <tr ng-repeat="(aIndex,data) in dataOverView |orderBy:dataSort | filter:dataFilter">
+                                                                    <th scope="row">{{aIndex+1}}</th>
+                                                                    <td>
+                                                                        {{data.hf_name}}</td>
+                                                                    <td>{{data.drug_name}}</td>
+                                                                    <td class="text-center">{{data.total_asl}}</td>
+                                                                    <td class="text-center">{{data.total_eop}}</td>
+                                                                    <td class="text-center">{{data.total_abs}}
+
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        {{data.month}}
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        -
                                                                     </td>
                                                                 </tr>
-
-
                                                                 </tbody>
                                                             </table>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <div class="panel panel-warning">
-                                                        <div class="panel-heading" style="text-align: center;"><strong>TOTAL NUMBER</strong></div>
-                                                        <div class="panel-body">
-                                                            <div google-chart chart="total_number"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+
                                             </div>
                                             <div class="panel panel-primary">
                                                 <div class="panel-heading" style="text-align: center;"><strong>MONTHLY EOP</strong></div>
