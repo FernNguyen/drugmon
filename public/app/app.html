@@ -154,20 +154,20 @@
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             From Month:
-                                                                            <select ng-model="slt_drug" class="form-control input-sm" ng-change="change_slt_drug()">
+                                                                            <select ng-model="usage_slt_from" class="form-control input-sm" >
                                                                                 <option value="0" ng-selected="0" selected>All </option>
                                                                                 <option ng-repeat="month in list_month" value="{{month.month_id}}">{{month.month_name}}</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             To Month:
-                                                                            <select ng-model="slt_drug" class="form-control input-sm" ng-change="change_slt_drug()">
+                                                                            <select ng-model="usage_slt_to" class="form-control input-sm">
                                                                                 <option value="0" ng-selected="0" selected>All </option>
                                                                                 <option ng-repeat="month in list_month" value="{{month.month_id}}">{{month.month_name}}</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="pull-right" style="margin-right:5px;">
-                                                                            <button class="btn btn-sm btn-primary" ng-click="exportData()">
+                                                                            <button class="btn btn-sm btn-primary" ng-click="exportDataUsage()">
                                                                                 <i class="fa fa-download" aria-hidden="true"></i>
                                                                                 Export in Excel
                                                                             </button>

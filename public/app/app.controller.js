@@ -409,6 +409,21 @@ angular.module('drugmonApp').controller('AppCtrl', function($scope,$http,$filter
         alasql('SELECT * INTO XLSX("DRUGMON_DataExport.xlsx",{headers:true}) FROM ?',[template_import]);
 
     };
+    //Export overview D
+    $scope.exportDataUsage = function () {
+        var template_import = [];
+        $scope.usage_summary.forEach(function(each,indx){
+            var x_each_line = {
+                "#"           : indx+1,
+                "DRUG_NAME"     : each.drug_name,
+                "TOTAL"   : each.drug_total
+            };
+            template_import.push(x_each_line);
+        });
+
+        alasql('SELECT * INTO XLSX("DRUGMON_UsageReport.xlsx",{headers:true}) FROM ?',[template_import]);
+
+    };
 
 
     $scope.init_load_data = function(){

@@ -44,7 +44,7 @@ app.use('/api/app', function(req, res) {
                         "type" : "sms_message",
                         "gateway_ref" : "e6f0bb62-de84-4d67-b282-1dd670a487ac",
                         "from" : eachDB.from,
-                        "message" : eachDB.content
+                        "message" : eachDB.content.toUpperCase()
                     },
                     updatedAt: new Date(),
                     createdAt: new Date()
